@@ -1,22 +1,3 @@
-// import UserRepository from "../../interface/repositories/UserRepository.js"
-// import otpService from "../../services/otpService.js"
-// import client from "../../config/redisClient.js"
-
-// async function InitialSignUp(userData){
-//     const repo = new UserRepository()
-//     const existingUser =await repo.findUserByEmail(userData.email)
-//     if(existingUser){
-//         return true
-//     }
-//     const otp = otpService()
-//     const val = JSON.stringify(userData)
-//     client.set('userData',val)
-//     client.setEx('otp',300,otp)
-//     return fasle
-// }
-
-// export default InitialSignUp
-
 class InitialSignUp {
     constructor({ userRepository, otpService, redisClient, bcrypt }) {
         this.userRepository = userRepository;

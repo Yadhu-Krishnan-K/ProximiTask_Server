@@ -1,8 +1,7 @@
-import UserModel from '../../infrastructure/db/mongoose.js';
+import UserModel from '../../infrastructure/db/userSchema.js';
 import User from '../../domain/entities/User.js';
 
 class UserRepository {
-
   async createUser(userDetails) {
     console.log('details = ', userDetails)
     const data = JSON.parse(userDetails)

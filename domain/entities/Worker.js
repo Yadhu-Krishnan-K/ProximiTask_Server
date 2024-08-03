@@ -1,11 +1,23 @@
 class Worker {
-    constructor({ id, name, email, password }) {
-      this.id = id;
-      this.name = name;
-      this.email = email;
-      this.password = password;
-    }
+  constructor({
+    name,
+    email,
+    password,
+    area,
+    category,
+    phoneNumber,
+    idCard,
+    idCardNum,
+  }) {
+    this.name = name;
+    this.email = email;
+    this.password = password;
+    this.area = area;
+    this.category = category;
+    this.phoneNumber = phoneNumber;
+    this.idCard = idCard;
+    this.idCardNum = idCardNum;
   }
-  
-  export default Worker;
-  
+}
+
+export default Worker

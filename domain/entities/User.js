@@ -5,6 +5,7 @@ class User {
       this.email = email;
       this.password = pass;
     }
+
   }
   
   export default User;

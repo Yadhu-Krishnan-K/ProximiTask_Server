@@ -1,4 +1,4 @@
-import User from '../entities/User.js';
+import User from '../../entities/User.js';
 
 class UserSignUp {
   constructor(userRepository) {
@@ -7,7 +7,6 @@ class UserSignUp {
 
 
   async execute(userDetails) {
-    // Add validation logic if necessary
     const user = await this.userRepository.createUser(userDetails);
     console.log('user = ',user)
     return new User(user);

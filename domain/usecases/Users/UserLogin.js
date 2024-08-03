@@ -1,5 +1,4 @@
-import User from '../entities/User.js';
-import { comparePass } from '../../utils/comparePass.js';
+import { comparePass } from '../../../utils/comparePass.js';
 
 class UserLogin {
   constructor(userRepository) {
