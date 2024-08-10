@@ -7,7 +7,6 @@ const signup = ((req,res)=>{
     const workerData = req.body
     try {
         const worker = new SignUp(workerRepository)
-        
     } catch (error) {
         
     }

@@ -6,15 +6,24 @@ const generateAccessToken = (email) => {
 };
 
 const generateRefreshToken = (email) => {
+  console.log('email when creating token',email)
   return sign({email:email}, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION });
 };
 
 const verifyToken = (token, secret) => {
-  return verify(token, secret);
+  try {
+    const decoded = verify(token, secret);
+    console.log('decoded = ',decoded)
+    const expTime = new Date(decoded.exp * 1000)
+    const success =  expTime > new Date();
+    return {success,email:decoded.email}
+  } catch (error) {
+    return {success:false}
+  }
 };
 
 export default {
   generateAccessToken,
   generateRefreshToken,
-  verifyToken,
+  verifyToken
 };

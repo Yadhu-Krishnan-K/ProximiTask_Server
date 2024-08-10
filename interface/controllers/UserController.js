@@ -63,7 +63,8 @@ const login = async (req, res) => {
     const refreshToken = jwt.generateRefreshToken(req.body.email)
     const accessToken = jwt.generateAccessToken(req.body.email)
     console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`)
-    res.status(200).json({ success: true, user: {name:user.name,email:user.email}, refreshToken, accessToken });
+    console.log(user)
+    res.status(200).json({ success: true, user: {name:user.username,email:user.email}, refreshToken, accessToken });
   } catch (error) {
     console.log('err:',error)
     res.status(400).json({ error: error.message });
