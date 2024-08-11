@@ -18,6 +18,32 @@ class UserRepository {
     }
     return null
   }
+
+  async findAllUsers(){
+    const usersList = await UserModel.find()
+    return usersList
+  }
+
+  async updateUserStatus(user_id) {
+    try {
+      const user = await UserModel.findById(user_id);
+      if (!user) {
+        throw new Error('User not found');
+      }
+      
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        user_id,
+        { isActive: !user.isActive },
+        { new: true }  // Return the updated document
+      );
+      
+      return new User(updatedUser.toObject());
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      throw error;
+    }
+  }
+  
 }
 
 export default UserRepository;

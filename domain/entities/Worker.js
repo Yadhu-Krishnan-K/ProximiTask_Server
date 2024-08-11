@@ -8,6 +8,8 @@ class Worker {
     phoneNumber,
     idCard,
     idCardNum,
+    requestInitiated,
+    active
   }) {
     this.name = name;
     this.email = email;
@@ -17,6 +19,8 @@ class Worker {
     this.phoneNumber = phoneNumber;
     this.idCard = idCard;
     this.idCardNum = idCardNum;
+    this.requestInitiated = requestInitiated,
+    this.active = active
   }
 }
 

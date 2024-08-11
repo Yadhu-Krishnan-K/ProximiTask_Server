@@ -6,6 +6,7 @@ import InitialSignUp from "../../domain/usecases/Users/initiateUserSignUp.js";
 import otpService from "../../services/otpService.js";
 import bcrypt from 'bcryptjs'
 import jwt from "../../utils/jwt.js";
+import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
 
 const userRepository = new UserRepository();
 
@@ -69,6 +70,51 @@ const login = async (req, res) => {
     console.log('err:',error)
     res.status(400).json({ error: error.message });
   }
+
 };
 
-export { signUp, login, initiateRegistration };
+const getUsers = async (req, res) => {
+  try {
+    // Await the result from the repository
+    const userList = await userRepository.findAllUsers();
+    
+    // Send the list of users as a response
+    res.status(200).json({
+      success: true,
+      data: userList,
+    });
+  } catch (error) {
+    // Log the error (for debugging purposes)
+    console.error("Error fetching users:", error);
+    
+    // Send an error response
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching users.",
+    });
+  }
+};
+
+const updateStatus = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const updateStatusUseCase = new UpdateStatus(userRepository);
+    const updatedUser = updateStatusUseCase.execute(userId)
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ success:true, message: 'User status updated'});
+  } catch (error) {
+    console.error('Error updating status:', error);
+    res.status(500).json({success:false, message: 'Server error' });
+  }
+};
+
+
+export { signUp, login, initiateRegistration, getUsers, updateStatus };

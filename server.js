@@ -6,6 +6,7 @@ import workerRoutes from './presentation/routes/workerRoutes.js'
 import adminRoutes from './presentation/routes/adminRoutes.js'
 import refresh from './presentation/routes/tokenRoute.js'
 import authMiddleware from './middlewares/accessToken.js';
+import cateRoute from './presentation/routes/cateRoute.js'
 import {config} from 'dotenv'
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/users', userRoutes);
 app.use('/workers',workerRoutes)
 app.use('/admin',adminRoutes);
 app.use('/refresh',refresh)
+app.use('/category',cateRoute)
 
 app.get('/test',authMiddleware,(req,res)=>{
   console.log('reached route')

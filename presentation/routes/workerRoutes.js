@@ -5,5 +5,7 @@ import { signup } from '../../interface/controllers/Workers/workerControll.js';
 const router = Router();
 
 router.post('/signup',signup)
+router.route('/')
+.get()
 
 export default router;

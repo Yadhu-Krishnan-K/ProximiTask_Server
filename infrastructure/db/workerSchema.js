@@ -8,7 +8,12 @@ const workerSchema = new Schema({
     category:String,
     phoneNumber:String,
     idCard:String,
-    idCardNum:String
+    idCardNum:String,
+    requestInitiated:Boolean,
+    active:{
+        type:Boolean,
+        default:false
+    }
 })
 
 const WorkerModel = mongoose.model('Worker',workerSchema);

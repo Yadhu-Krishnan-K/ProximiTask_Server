@@ -4,6 +4,9 @@ const UserSchema = new Schema({
     type:String,
     required:true
   },
+  googleId:{
+    type:String
+  },
   email: {
     type:String,
     required:true
@@ -12,6 +15,10 @@ const UserSchema = new Schema({
     type:String,
     required:true
   },
+  isActive:{
+    type:Boolean,
+    default:true
+  }
   
 });
 
