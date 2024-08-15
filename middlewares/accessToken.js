@@ -1,7 +1,7 @@
 import jwt from "../utils/jwt.js";
 
 const authMiddleware = (req, res, next) => {
-  console.log('inside auth');
+  // console.log('inside auth');
   // console.log(req.headers)
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;

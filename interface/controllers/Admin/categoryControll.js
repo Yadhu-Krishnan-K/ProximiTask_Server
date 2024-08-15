@@ -6,48 +6,47 @@ import GetCategory from "../../../domain/usecases/Category/GetCategory.js";
 
 const CateRepository = new CateRepo()
 
-const addCategory = async(req,res) => {
+const addCategory = async (req, res, next) => {
     try {
         const { categoryName } = req.body;
         const addCategoryUseCase = new AddCategory(CateRepository);
         const category = await addCategoryUseCase.execute(categoryName);
-        return res.status(201).json({success: true});
+        return res.status(201).json({ success: true });
     } catch (error) {
-        return res.status(400).json({success:false, error: error.message });
+        next(error);  // Pass error to centralized handler
     }
 }
 
-const updateCategory = async(req,res) => {
+const updateCategory = async (req, res, next) => {
     try {
-        const {cateName} = req.body;
-        const cateId = req.params.id
+        const { cateName } = req.body;
+        const cateId = req.params.id;
         const updateCategoryUseCase = new UpdateCategory(CateRepository);
-        const category = await updateCategoryUseCase.execute(cateId,cateName);
-        return res.status(201).json({success:true})
+        const category = await updateCategoryUseCase.execute(cateId, cateName);
+        return res.status(201).json({ success: true });
     } catch (error) {
-        return res.status(500).json({success:false,error: error.message})
+        next(error);  // Pass error to centralized handler
     }
 }
 
-const deleteCategory = async(req,res) => {
+const deleteCategory = async (req, res, next) => {
     try {
         const cateId = req.params.id;
-        console.log('cateId === ===',cateId)
-        const deleteCateUseCase = new DeleteCategory(CateRepository)
-        const deleted = await deleteCateUseCase.execute(cateId)
-        return res.status(200).json({success:true})
+        const deleteCateUseCase = new DeleteCategory(CateRepository);
+        const deleted = await deleteCateUseCase.execute(cateId);
+        return res.status(200).json({ success: true });
     } catch (error) {
-        return res.status(500).json({success:false,error: error.message})
+        next(error);  // Pass error to centralized handler
     }
 }
 
-const getCategory = async(req,res) => {
+const getCategory = async (req, res, next) => {
     try {
-        const getCateUseCase = new GetCategory(CateRepository)
-        const cateList = await getCateUseCase.execute()
-        return res.status(200).json({cateList})
+        const getCateUseCase = new GetCategory(CateRepository);
+        const cateList = await getCateUseCase.execute();
+        return res.status(200).json({ cateList });
     } catch (error) {
-        return res.status(500).json({success:false,error: error.message})
+        next(error);  // Pass error to centralized handler
     }
 }
 

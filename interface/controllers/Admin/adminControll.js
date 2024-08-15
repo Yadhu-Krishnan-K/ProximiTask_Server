@@ -1,8 +1,9 @@
 import AdminLogin from "../../../domain/usecases/Admin/LoginUseCase.js"
 import AdminRepository from "../../repositories/AdminRepository.js"
+import CustomError from "../../../config/CustomError.js"
 
 const AdminRepo = new AdminRepository()
-const adminLogin = (req,res) =>{
+const adminLogin = (req,res,next) =>{
     console.log('request reached')
     try {
         const login = new AdminLogin(AdminRepo)
@@ -12,10 +13,11 @@ const adminLogin = (req,res) =>{
                 success:true
             })
         }else{
-            return res.status(404).json()
+            throw new CustomError()
         }
     } catch (error) {
         console.error(error)
+        next(error)
     }
 }
 

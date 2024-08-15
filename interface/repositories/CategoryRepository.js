@@ -1,32 +1,43 @@
 import CategoryModel from "../../infrastructure/db/categorySchema.js";
 import Category from "../../domain/entities/Category.js";
+import CustomError from "../../config/CustomError.js";
 
 class CateRepo {
     async addCate(category) {
         try {
-            const cate = new CategoryModel({ categoryName: category });
-            await cate.save();
-            return new Category(cate.toObject());
+            category = category.toLowerCase()
+            const cate = CategoryModel.findOne({categoryName:category})
+            if(cate){
+                throw new CustomError('Category already exist',409)
+            }
+            const newCate = new CategoryModel({ categoryName: category });
+            await newCate.save();
+            return new Category(newCate.toObject());
         } catch (error) {
             console.error('Error adding category:', error);
-            throw new Error('Failed to add category');
+            throw error
         }
     }
 
     async updateCate(cateId, cate) {
         try {
+            cate = cate.toLowerCase()
+            const cate = CategoryModel.findOne({categoryName:cate})
+            if(cate){
+                throw new CustomError('Category already Exist',409)
+            }
             const updatedCate = await CategoryModel.findByIdAndUpdate(
                 cateId,
                 { categoryName: cate },
-                { new: true, runValidators: true } // Return the updated document
-            ).lean(); // Optionally return a plain JS object
+                { new: true, runValidators: true } 
+            ).lean();
             if (!updatedCate) {
-                throw new Error('Category not found');
+                throw new CustomError('Category not found',404);
             }
             return new Category(updatedCate);
         } catch (error) {
             console.error('Error updating category:', error);
-            throw new Error('Failed to update category');
+            throw error
         }
     }
 
@@ -34,12 +45,12 @@ class CateRepo {
         try {
             const deletedCate = await CategoryModel.findByIdAndDelete(cateId);
             if (!deletedCate) {
-                throw new Error('Category not found');
+                throw new CustomError('Category not found',404);
             }
             return new Category(deletedCate.toObject());
         } catch (error) {
             console.error('Error deleting category:', error);
-            throw new Error('Failed to delete category');
+            throw error
         }
     }
 

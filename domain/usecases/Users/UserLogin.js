@@ -1,3 +1,4 @@
+import CustomError from '../../../config/CustomError.js';
 import { comparePass } from '../../../utils/comparePass.js';
 
 class UserLogin {
@@ -8,10 +9,16 @@ class UserLogin {
   async execute({ email, pass }) {
     const user = await this.userRepository.findUserByEmail(email);
     console.log(user)
-    if (user && comparePass(pass,user.password)) {
-      return user;
+    if (user) {
+      if(comparePass(pass,user.password)){
+        return user;
+      }else{
+        throw new CustomError('Invalid password',401)
+      }
+    }else{
+      throw new CustomError('Invalid User',401)
     }
-    throw new Error('Invalid credentials');
+    throw new CustomError('Invalid credentials', 401);
   }
 }
 

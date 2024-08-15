@@ -1,3 +1,5 @@
+import CustomError from "../../../config/CustomError.js";
+
 class InitialSignUp {
     constructor({ userRepository, otpService, redisClient, bcrypt }) {
         this.userRepository = userRepository;
@@ -10,7 +12,8 @@ class InitialSignUp {
         try {
             const existingUser = await this.userRepository.findUserByEmail(userData.email);
             if (existingUser) {
-                return { success: false, message: "User already exists",status:409 };
+                // return { success: false, message: "User already exists",status:409 };
+                throw new CustomError('User already exist',409)
             }
             console.log(userData)
             const otp = await this.otpService(userData.email)
