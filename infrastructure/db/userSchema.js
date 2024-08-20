@@ -4,16 +4,21 @@ const UserSchema = new Schema({
     type:String,
     required:true
   },
-  googleId:{
-    type:String
-  },
   email: {
     type:String,
     required:true
   },
+  role:{
+    type:String,
+    default:'user'
+  },
+  googleLogin:{
+    type:Boolean,
+    default:false
+  },
   pass: {
     type:String,
-    required:true
+    // required:true
   },
   isActive:{
     type:Boolean,

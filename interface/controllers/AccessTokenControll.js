@@ -11,7 +11,7 @@ const refreshAccessToken = (req, res, next) => {
     const secret = process.env.REFRESH_TOKEN_SECRET;
 
     try {
-        const verified = jwt.verifyToken(refreshToken, secret);
+        const verified = jwt.verifyToken(refreshToken, secret,);
         console.log('Token verification result:', verified);
 
         if (verified.success) {
@@ -20,7 +20,8 @@ const refreshAccessToken = (req, res, next) => {
             console.log('Generated Access Token:', accessToken);
             return res.json({ success: true, accessToken });
         } else {
-            return next(new CustomError('Invalid refresh token', 401)); // Unauthorized if token is invalid
+            // return next(new CustomError('Invalid refresh token', 401)); // Unauthorized if token is invalid
+            return res.json({success:false})
         }
     } catch (error) {
         next(new CustomError('Failed to refresh access token', 500)); // Internal server error if something goes wrong

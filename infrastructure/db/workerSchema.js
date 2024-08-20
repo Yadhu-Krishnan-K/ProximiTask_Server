@@ -13,6 +13,10 @@ const workerSchema = new Schema({
     active:{
         type:Boolean,
         default:false
+    },
+    role:{
+        type:String,
+        default:'worker'
     }
 })
 

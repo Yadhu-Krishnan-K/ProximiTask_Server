@@ -5,6 +5,14 @@ class User {
       this.googleId = googleId;
       this.email = email;
       this.password = pass;
+      this.googleLogin = false
+    }
+
+    googleLI(){
+      this.googleLogin = true
+    }
+    googleLO(){
+      this.googleLogin = false
     }
 
   }

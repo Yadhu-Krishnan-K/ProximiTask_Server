@@ -6,6 +6,7 @@ class UserRepository {
   async createUser(userDetails) {
     try {
       const data = JSON.parse(userDetails);
+      data.role = 'user'
       const user = new UserModel(data);
       await user.save();
       return user;
@@ -57,6 +58,8 @@ class UserRepository {
       throw new CustomError('Failed to update user status', 500);
     }
   }
+
+  // async logOut()
 }
 
 export default UserRepository;

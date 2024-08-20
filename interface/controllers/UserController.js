@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import jwt from "../../utils/jwt.js";
 import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
 import CustomError from "../../config/CustomError.js";
+import FindUser from "../../domain/usecases/Users/FindUser.js";
 
 const userRepository = new UserRepository();
 
@@ -64,14 +65,14 @@ const login = async (req, res, next) => {
   try {
     const user = await userLogin.execute(req.body);
     const refreshToken = jwt.generateRefreshToken(req.body.email);
-    const accessToken = jwt.generateAccessToken(req.body.email);
+    const accessToken = jwt.generateAccessToken(req.body.email,'user');
 
-    console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
-    res.status(200).json({ 
-      success: true, 
+    // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
+    res.status(200).json({
+      success: true,
       user: { name: user.username, email: user.email }, 
-      refreshToken, 
-      accessToken 
+      refreshToken,
+      accessToken
     });
   } catch (error) {
     console.error('Error during login:', error);
@@ -111,4 +112,45 @@ const updateStatus = async (req, res, next) => {
   }
 };
 
-export { signUp, login, initiateRegistration, getUsers, updateStatus };
+const googleLogin = async(req,res,next) => {
+  const {token} = req.body
+  try {
+    const details = jwt.decoded(token)
+    console.log(details)
+    const findUserUseCase = new FindUser(UserRepository)
+    const user = findUserUseCase.execute(details.email)
+    console.log('user from googleLogin = ',user)
+    if(!user){
+      const userSignUp = new UserSignUp(userRepository);
+      const user = await userSignUp.execute({email:details.email,name:details.name,googleLogin:true});
+      const refreshToken = jwt.generateRefreshToken(details.email);
+      const accessToken = jwt.generateAccessToken(details.email,'user');
+  
+     return res.status(200).json({
+        success: true,
+        user: { name: user.username, email: user.email }, 
+        refreshToken,
+        accessToken
+      });
+    }else{
+      const userLogin = new UserLogin(userRepository)
+      const userG = await userLogin.execute(user.email,user.username);
+    const refreshToken = jwt.generateRefreshToken(userG.email);
+    const accessToken = jwt.generateAccessToken(userG.email,'user');
+
+    // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
+    res.status(200).json({
+      success: true,
+      user: { name: userG.username, email: userG.email }, 
+      refreshToken,
+      accessToken
+    });
+    }
+    
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export { signUp, login, initiateRegistration, getUsers, updateStatus, googleLogin };

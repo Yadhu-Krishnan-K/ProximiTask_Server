@@ -18,7 +18,7 @@ class UserLogin {
     }else{
       throw new CustomError('Invalid User',401)
     }
-    throw new CustomError('Invalid credentials', 401);
+    // throw new CustomError('Invalid credentials', 401);
   }
 }
 

@@ -2,6 +2,7 @@ import WorkerRepository from "../../repositories/WorkerRepository.js";
 import SignUp from "../../../domain/usecases/Workers/SignUp.js";
 import Login from "../../../domain/usecases/Workers/Login.js";
 import CustomError from "../../../config/CustomError.js";
+import jwt from "../../../utils/jwt.js";
 const workerRepository = new WorkerRepository();
 
 const signup = async (req, res, next) => {
@@ -58,10 +59,12 @@ const deleteWorker = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { email, password } = req.body;
     try {
+        const refreshToken = jwt.generateRefreshToken(email,'worker');
+        const accessToken = jwt.generateAccessToken(password,'worker');
         const UserLoginUseCase = new Login(workerRepository);
         const worker = await UserLoginUseCase.execute({ email, password });
         console.log('worker when logging in ===== ', worker);
-        return res.status(200).json({ success: true, worker });
+        return res.status(200).json({ success: true, worker,refreshToken,accessToken });
     } catch (error) {
         next(new CustomError(error.message, 500));  // Pass error to centralized handler
     }
