@@ -22,7 +22,7 @@ class InitialSignUp {
             const userDataString = JSON.stringify(userData);
 
             await this.redisClient.set('userData', userDataString);
-            await this.redisClient.setEx('otp', 300, otp);
+            await this.redisClient.setEx('otp', 30, otp);
 
             return { success: true, message: "OTP sent", otp ,status:200}; // Return otp for testing purposes, remove in production
         } catch (error) {
