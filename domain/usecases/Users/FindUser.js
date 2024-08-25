@@ -8,9 +8,14 @@ class FindUser{
     
     async execute(email){
         try {
-            const uesr = await this.repository.findUserByEmail(email)
+            console.log('repo = ',this.repository)
+            console.log('inside executing FindUser usecase, email = ',email);
+            
+            const user = await this.repository.findUserByEmail(email)
+            console.log('user from FindUserUseCase = ',user)
             return user
         } catch (error) {
+            console.log('error from findUserUseCase',error)
             return new CustomError(error.message,error.status)
         }
     }

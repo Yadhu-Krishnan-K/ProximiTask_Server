@@ -10,6 +10,7 @@ class UserLogin {
     const user = await this.userRepository.findUserByEmail(email);
     console.log(user)
     if (user) {
+      if(!user.isActive) throw new CustomError('User has no acess',403)
       if(comparePass(pass,user.password)){
         return user;
       }else{

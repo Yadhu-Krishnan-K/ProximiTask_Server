@@ -9,6 +9,7 @@ import jwt from "../../utils/jwt.js";
 import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
 import CustomError from "../../config/CustomError.js";
 import FindUser from "../../domain/usecases/Users/FindUser.js";
+import { name } from "ejs";
 
 const userRepository = new UserRepository();
 
@@ -58,7 +59,7 @@ const signUp = async (req, res, next) => {
     console.log(cliOtp, ttl);
 
     if (otp == cliOtp && ttl > 0) {
-      const data = await client.get("userData");
+      const data = JSON.parse(await client.get("userData"));
       console.log("userData = ", data);
 
       const userSignUp = new UserSignUp(userRepository);
@@ -70,7 +71,7 @@ const signUp = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error during signUp:", error);
-    next(error); // Use next to pass error to centralized handler
+    next(error);
   }
 };
 
@@ -86,13 +87,13 @@ const login = async (req, res, next) => {
     // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
     res.status(200).json({
       success: true,
-      user: { name: user.username, email: user.email },
+      user: { name: user.username, email: user.email, isActive:user.isActive },
       refreshToken,
-      accessToken,
+      accessToken
     });
   } catch (error) {
     console.error("Error during login:", error);
-    next(new CustomError("Invalid login credentials", 400));
+    next(error);
   }
 };
 
@@ -133,8 +134,9 @@ const googleLogin = async (req, res, next) => {
   try {
     const details = jwt.decoded(token);
     console.log(details);
-    const findUserUseCase = new FindUser(UserRepository);
-    const user = findUserUseCase.execute(details.email);
+    console.log(`email from google login=${details.email}---------------------================----------------------==========================`)
+    const findUserUseCase = new FindUser(userRepository);
+    const user = await findUserUseCase.execute(details.email);
     console.log("user from googleLogin = ", user);
     if (!user) {
       const userSignUp = new UserSignUp(userRepository);
@@ -148,20 +150,19 @@ const googleLogin = async (req, res, next) => {
 
       return res.status(200).json({
         success: true,
-        user: { name: user.username, email: user.email },
+        user: { name: user.username, email: user.email, isActive:user.isActive },
         refreshToken,
         accessToken,
       });
     } else {
-      const userLogin = new UserLogin(userRepository);
-      const userG = await userLogin.execute(user.email, user.username);
-      const refreshToken = jwt.generateRefreshToken(userG.email);
-      const accessToken = jwt.generateAccessToken(userG.email, "user");
+      // const userLogin = new UserLogin(userRepository);
+      // const userG = await userLogin.execute();
+      const refreshToken = jwt.generateRefreshToken(details.email);
+      const accessToken = jwt.generateAccessToken(details.email, "user");
 
-      // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
       res.status(200).json({
         success: true,
-        user: { name: userG.username, email: userG.email },
+        user: { name: details.name, email: details.email, isActive:user.isActive },
         refreshToken,
         accessToken,
       });
@@ -171,6 +172,18 @@ const googleLogin = async (req, res, next) => {
   }
 };
 
+const getUserData = async(req,res,next) => {
+  try {
+    const email = req.params.email
+    const user = await new FindUser(userRepository).execute(email)
+    console.log('user Data = ',user)
+    res.status(200).json({user:{name:user.username,email:user.email,isActive:user.isActive}})
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 export {
   signUp,
   login,
@@ -178,5 +191,8 @@ export {
   getUsers,
   updateStatus,
   googleLogin,
-  resendOtp
+  resendOtp,
+  getUserData
 };
+
+

@@ -6,7 +6,8 @@ class CateRepo {
     async addCate(category) {
         try {
             category = category.toLowerCase()
-            const cate = CategoryModel.findOne({categoryName:category})
+            const cate = await CategoryModel.findOne({categoryName:category})
+            console.log('cate = ',cate)
             if(cate){
                 throw new CustomError('Category already exist',409)
             }
@@ -19,18 +20,19 @@ class CateRepo {
         }
     }
 
-    async updateCate(cateId, cate) {
+    async updateCate(cateId, category) {
         try {
-            cate = cate.toLowerCase()
-            const cate = CategoryModel.findOne({categoryName:cate})
+            console.log(category)
+            let lowerCate = category.toLowerCase()
+            const cate = await CategoryModel.findOne({categoryName:lowerCate})
             if(cate){
                 throw new CustomError('Category already Exist',409)
             }
             const updatedCate = await CategoryModel.findByIdAndUpdate(
                 cateId,
-                { categoryName: cate },
-                { new: true, runValidators: true } 
-            ).lean();
+                { categoryName: lowerCate },
+                { new: true} 
+            );
             if (!updatedCate) {
                 throw new CustomError('Category not found',404);
             }

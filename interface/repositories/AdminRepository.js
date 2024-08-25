@@ -9,7 +9,7 @@ class AdminRepository{
             if(admin){
                 return new Admin(admin.toObject())
             }else{
-                throw new CustomError('Wrong Credentials',401)
+                throw new CustomError('Wrong Credentials',400)
             }
         } catch (error) {
             console.error(error)

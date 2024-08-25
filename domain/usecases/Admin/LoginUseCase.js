@@ -4,7 +4,12 @@ class AdminLogin{
         this.repository = repository
     }
     async execute(email,password){
-        const admin = await this.repository.findAdmin(email,password)
+        try {
+            const admin = await this.repository.findAdmin(email,password)
+            return admin
+        } catch (error) {
+            throw error
+        }
     }
 }
 

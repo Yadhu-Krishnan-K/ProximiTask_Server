@@ -1,11 +1,12 @@
 class User {
-    constructor({ name, googleId, email, pass }) {
+    constructor({ name, googleId, email, pass, isActive }) {
       // this.id = id;
       this.username = name;
       this.googleId = googleId;
       this.email = email;
       this.password = pass;
       this.googleLogin = false
+      this.isActive = isActive
     }
 
     googleLI(){

@@ -5,7 +5,7 @@ import CustomError from '../../config/CustomError.js';
 class UserRepository {
   async createUser(userDetails) {
     try {
-      const data = JSON.parse(userDetails);
+      const data = userDetails;
       data.role = 'user'
       const user = new UserModel(data);
       await user.save();
@@ -18,7 +18,10 @@ class UserRepository {
 
   async findUserByEmail(email) {
     try {
-      const user = await UserModel.findOne({ email });
+      console.log('email from findUserByEmail = ',email);
+      
+      const user = await UserModel.findOne({ email});
+      console.log('user data from repo = ',user)
       if (user) {
         return new User(user.toObject());
       }
