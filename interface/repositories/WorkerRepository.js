@@ -8,6 +8,8 @@ class WorkerRepository {
                 name: workerDetails.fullName,
                 email: workerDetails.email,
                 password: workerDetails.password,
+                long: workerDetails.long,
+                lat: workerDetails.lat,
                 area: workerDetails.area,
                 category: workerDetails.category,
                 phoneNumber: workerDetails.phone,
@@ -84,6 +86,19 @@ class WorkerRepository {
             return new Worker(worker.toObject());
         } catch (error) {
             throw new CustomError(error.message, 500);
+        }
+    }
+
+    async statusChange(id){
+        try {
+            console.log('id = ', id, ' idtype = ', typeof id);
+            const worker = await WorkerModel.findById(id);
+            worker.active = !worker.active
+            await worker.save()
+            return worker
+        } catch (error) {
+            console.log('error from changing status worker === ', error)
+            throw new CustomError(error.message,error.statusCode)
         }
     }
 }

@@ -6,7 +6,7 @@ const router = Router();
 
 router.route('/')
 .post(authMiddleware('admin'), addCategory)
-.get(authMiddleware('admin'), getCategory)
+.get(getCategory)
 
 router.route('/:id')
 .put(authMiddleware('admin'), updateCategory)

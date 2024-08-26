@@ -5,6 +5,8 @@ const workerSchema = new Schema({
     email:String,
     password:String,
     area:String,
+    lat:String,
+    long:String,
     category:String,
     phoneNumber:String,
     idCard:String,

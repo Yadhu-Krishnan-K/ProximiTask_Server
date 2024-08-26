@@ -70,4 +70,15 @@ const login = async (req, res, next) => {
     }
 };
 
-export { signup, getAllWorkers, accessControll, deleteWorker, login };
+const changeStatus = async(req,res,next)=>{
+    const worker_id = req.params.id;
+    console.log('workerID = ', worker_id);
+    try {
+        const worker = await workerRepository.statusChange(worker_id);
+        return res.status(200).json({success:true})
+    } catch (error) {
+        next(error)
+    }
+}
+
+export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus };
