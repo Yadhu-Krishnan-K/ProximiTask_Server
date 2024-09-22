@@ -9,7 +9,9 @@ import jwt from "../../utils/jwt.js";
 import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
 import CustomError from "../../config/CustomError.js";
 import FindUser from "../../domain/usecases/Users/FindUser.js";
-import { name } from "ejs";
+// import { FaEye } from "react-icons/fa";
+// import { FaEyeSlash } from "react-icons/fa";
+// import { name } from "ejs";
 
 const userRepository = new UserRepository();
 

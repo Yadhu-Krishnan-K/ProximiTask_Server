@@ -3,15 +3,28 @@ import Category from "../../domain/entities/Category.js";
 import CustomError from "../../config/CustomError.js";
 
 class CateRepo {
-    async addCate(category) {
+    async addCate(category,originalImgPublicId,originalImgURL,croppedImgPublicId,croppedImgURL) {
         try {
+            console.log(`
+                -=-p==--=-=-=-=-=-=-=-=-=
+                inside addCate Cate REpo,,,,,
+                oriImgPubId = ${originalImgPublicId},
+                oriImgUrl = ${ originalImgURL},
+                croImgPubId = ${ croppedImgPublicId},
+                croImgUrl = ${ croppedImgURL}
+                `)
             category = category.toLowerCase()
             const cate = await CategoryModel.findOne({categoryName:category})
-            console.log('cate = ',cate)
             if(cate){
                 throw new CustomError('Category already exist',409)
             }
-            const newCate = new CategoryModel({ categoryName: category });
+            const newCate = new CategoryModel({ 
+                categoryName: category,
+                originalImgPublicId: originalImgPublicId,
+                originalImgURL:originalImgURL,
+                croppedImgPublicId,
+                croppedImgURL
+             });
             await newCate.save();
             return new Category(newCate.toObject());
         } catch (error) {

@@ -19,6 +19,22 @@ const workerSchema = new Schema({
     role:{
         type:String,
         default:'worker'
+    },
+    originalImgURL:{
+        type:String,
+        required:true
+    },
+    originalImgPublicId:{
+        type:String,
+        required:true
+    },
+    croppedImgURL:{
+        type:String,
+        required:true
+    },
+    croppedImgPublicId:{
+        type:String,
+        required:true
     }
 })
 

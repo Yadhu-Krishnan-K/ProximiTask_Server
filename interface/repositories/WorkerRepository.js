@@ -3,6 +3,7 @@ import Worker from "../../domain/entities/Worker.js";
 import CustomError from "../../config/CustomError.js";
 class WorkerRepository {
     async createWorker(workerDetails) {
+        console.log('workerDetails from repo=============------------', workerDetails)
         try {
             const worker = new WorkerModel({
                 name: workerDetails.fullName,
@@ -16,12 +17,20 @@ class WorkerRepository {
                 idCard: workerDetails.idType,
                 idCardNum: workerDetails.idNumber,
                 requestInitiated: true,
-                active: false
+                active: false,
+                originalImgURL:workerDetails.originalImgURL,
+                originalImgPublicId:workerDetails.originalImgPublicId,
+                croppedImgURL:workerDetails.croppedImgURL,
+                croppedImgPublicId:workerDetails.croppedImgPublicId
             });
+            console.log('before saving --------------------worker = ===',worker)
             await worker.save();
+            console.log('saved worker------------');
+            
             return new Worker(worker.toObject());
         } catch (error) {
-            throw new CustomError('Failed to create worker', 500);
+            console.log('error = ',error)
+            // throw new CustomError('Failed to create worker', 500);   
         }
     }
 
@@ -32,6 +41,13 @@ class WorkerRepository {
             return workerList;
         } catch (error) {
             throw new CustomError('Failed to retrieve workers list', 500);
+        }
+    }
+    async findWorker(){
+        try {
+            
+        } catch (error) {
+            
         }
     }
 
@@ -70,7 +86,7 @@ class WorkerRepository {
     async loginWorker(workerData) {
         try {
             const worker = await WorkerModel.findOne({ email: workerData.email });
-
+            console.log('worker from worker repo = ',worker)
             if (!worker) {
                 throw new CustomError('Worker does not exist', 404);
             }
@@ -83,7 +99,7 @@ class WorkerRepository {
                 throw new CustomError('Access Denied by Admin', 403); // Forbidden
             }
 
-            return new Worker(worker.toObject());
+            return worker.toObject();
         } catch (error) {
             throw new CustomError(error.message, 500);
         }
