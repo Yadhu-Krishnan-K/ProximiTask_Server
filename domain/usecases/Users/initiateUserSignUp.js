@@ -8,7 +8,7 @@ class InitialSignUp {
         this.bcrypt = bcrypt
     }
 
-    async execute(userData) {
+    async execute(userData,imgsData) {
         try {
             const existingUser = await this.userRepository.findUserByEmail(userData.email);
             if (existingUser) {
@@ -19,6 +19,7 @@ class InitialSignUp {
             const otp = await this.otpService(userData.email)
             const hashPass = await this.bcrypt.hash(userData.pass, 10);
             userData.pass = hashPass
+            userData.imgs = imgsData
             const userDataString = JSON.stringify(userData);
 
             await this.redisClient.set('userData', userDataString);

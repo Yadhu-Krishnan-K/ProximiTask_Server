@@ -3,9 +3,9 @@ import User from '../../domain/entities/User.js';
 import CustomError from '../../config/CustomError.js';
 
 class UserRepository {
-  async createUser(userDetails) {
+  async createUser(userDetails,userImgs) {
     try {
-      const data = userDetails;
+      const data = Object.assign({},userDetails,userImgs);
       data.role = 'user'
       const user = new UserModel(data);
       await user.save();

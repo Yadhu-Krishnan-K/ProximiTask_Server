@@ -23,6 +23,22 @@ const UserSchema = new Schema({
   isActive:{
     type:Boolean,
     default:true
+  },
+  originalImgURL:{
+    type:String,
+    required:true
+  },
+  originalImgPublicId:{
+      type:String,
+      required:true
+  },
+  croppedImgURL:{
+      type:String,
+      required:true
+  },
+  croppedImgPublicId:{
+      type:String,
+      required:true
   }
   
 });

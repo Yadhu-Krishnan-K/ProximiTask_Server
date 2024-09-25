@@ -9,6 +9,7 @@ import jwt from "../../utils/jwt.js";
 import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
 import CustomError from "../../config/CustomError.js";
 import FindUser from "../../domain/usecases/Users/FindUser.js";
+import ImgUpload from "../../utils/ImgUpload.js";
 // import { FaEye } from "react-icons/fa";
 // import { FaEyeSlash } from "react-icons/fa";
 // import { name } from "ejs";
@@ -16,8 +17,16 @@ import FindUser from "../../domain/usecases/Users/FindUser.js";
 const userRepository = new UserRepository();
 
 const initiateRegistration = async (req, res, next) => {
+  
   console.log("reached initialSignup, body=", req.body);
+  const imgsData = req.files;
+  console.log('imgData from initaiteRegistration == ',imgsData)
+
+
   const userData = req.body;
+  // const imgUpload = new ImgUpload(originalImageBuffer,croppedImageBuffer)
+  // const [originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL] = await imgUpload.uploadImages()
+
 
   const initialSignUp = new InitialSignUp({
     userRepository: new UserRepository(),
@@ -27,7 +36,7 @@ const initiateRegistration = async (req, res, next) => {
   });
 
   try {
-    const response = await initialSignUp.execute(userData);
+    const response = await initialSignUp.execute(userData,imgsData);
     console.log("res = ", response);
     res
       .status(response.status)
@@ -62,11 +71,19 @@ const signUp = async (req, res, next) => {
 
     if (otp == cliOtp && ttl > 0) {
       const data = JSON.parse(await client.get("userData"));
+
+      const originalImageBuffer = data.imgs.userImg[0].buffer
+      const croppedImageBuffer = data.imgs.croppedImg[0].buffer
+      const imgUpload = new ImgUpload(originalImageBuffer,croppedImageBuffer)
+      const [originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL] = await imgUpload.uploadImages()
+      let imgObj = {
+        originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL
+      }
       console.log("userData = ", data);
 
       const userSignUp = new UserSignUp(userRepository);
-      const user = await userSignUp.execute(data);
-      console.log("going to send response");
+      const user = await userSignUp.execute(data,imgObj);
+      console.log("going to send response, by the way user = ",user);
       res.status(201).json({ success: true });
     } else {
       throw new CustomError("Invalid or expired OTP", 400);

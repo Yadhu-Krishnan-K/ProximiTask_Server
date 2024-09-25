@@ -1,9 +1,14 @@
 import { Router } from 'express';
+import multer from 'multer'
+
 import { signUp, login, initiateRegistration, getUsers, updateStatus, googleLogin, resendOtp, getUserData } from '../../interface/controllers/UserController.js';
 import authMiddleware from '../../middlewares/accessToken.js';
-const router = Router();
 
-router.post('/initiateSignup', initiateRegistration);
+const router = Router();
+const storage = multer.memoryStorage()
+const upload = multer({storage})
+
+router.post('/initiateSignup', upload.fields([{name:"userImg"},{name:"croppedImg"}]), initiateRegistration);
 router.post('/signup',signUp)
 router.post('/login', login);
 router.post('/resend-otp',resendOtp)
