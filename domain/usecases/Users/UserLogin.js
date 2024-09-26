@@ -1,5 +1,6 @@
 import CustomError from '../../../config/CustomError.js';
 import { comparePass } from '../../../utils/comparePass.js';
+import User from '../../entities/User.js';
 
 class UserLogin {
   constructor(userRepository) {
@@ -12,10 +13,10 @@ class UserLogin {
     console.log(user)
     if (user) {
       if(!user.isActive) throw new CustomError('User has no access',403)
-        const res = await comparePass(pass,user.password)
+        const res = await comparePass(pass,user.pass)
         console.log('comparePass res = ',res)
       if(res){
-        return user;
+        return new User(user.toObject());
       }else{
         throw new CustomError('Invalid password',401)
       }

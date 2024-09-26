@@ -95,14 +95,14 @@ const signUp = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  console.log(req.body);
+  console.log('body === ',req.body);
   const userLogin = new UserLogin(userRepository);
 
   try {
     const user = await userLogin.execute(req.body);
     const refreshToken = jwt.generateRefreshToken(req.body.email);
     const accessToken = jwt.generateAccessToken(req.body.email, "user");
-
+    console.log('userData while login in === ',user)
     // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
     res.status(200).json({
       success: true,

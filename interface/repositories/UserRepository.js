@@ -1,5 +1,5 @@
 import UserModel from '../../infrastructure/db/userSchema.js';
-import User from '../../domain/entities/User.js';
+// import User from '../../domain/entities/User.js';
 import CustomError from '../../config/CustomError.js';
 
 class UserRepository {
@@ -23,7 +23,7 @@ class UserRepository {
       const user = await UserModel.findOne({ email});
       console.log('user data from repo = ',user)
       if (user) {
-        return new User(user.toObject());
+        return user
       }
       return null;
     } catch (error) {
