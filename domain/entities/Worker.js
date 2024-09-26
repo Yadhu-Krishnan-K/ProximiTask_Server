@@ -2,7 +2,6 @@ class Worker {
   constructor({
     name,
     email,
-    password,
     area,
     category,
     phoneNumber,
@@ -13,7 +12,6 @@ class Worker {
   }) {
     this.name = name;
     this.email = email;
-    this.password = password;
     this.area = area;
     this.category = category;
     this.phoneNumber = phoneNumber;

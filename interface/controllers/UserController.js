@@ -106,7 +106,15 @@ const login = async (req, res, next) => {
     // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
     res.status(200).json({
       success: true,
-      user: { name: user.username, email: user.email, isActive:user.isActive },
+      user: { 
+        name: user.username, 
+        email: user.email, 
+        isActive:user.isActive, 
+        originalImgURL:user.originalImgURL,
+        originalImgPublicId: user.originalImgPublicId,
+        croppedImgURL:user.croppedImgURL,
+        croppedImgPublicId:user.croppedImgPublicId 
+      },
       refreshToken,
       accessToken
     });
