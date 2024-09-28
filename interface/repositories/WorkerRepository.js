@@ -1,6 +1,7 @@
 import WorkerModel from "../../infrastructure/db/workerSchema.js";
 import Worker from "../../domain/entities/Worker.js";
 import CustomError from "../../config/CustomError.js";
+import WorkerDto from "../../helper/WorkerDTO.js";
 class WorkerRepository {
     async createWorker(workerDetails) {
         console.log('workerDetails from repo=============------------', workerDetails)
@@ -43,11 +44,12 @@ class WorkerRepository {
             throw new CustomError('Failed to retrieve workers list', 500);
         }
     }
-    async findWorker(){
+    async findWorker(workerId){
         try {
-            
+            const worker = await WorkerModel.findById(workerId)
+            return new WorkerDto(worker.toObject())
         } catch (error) {
-            
+            console.log(error)
         }
     }
 

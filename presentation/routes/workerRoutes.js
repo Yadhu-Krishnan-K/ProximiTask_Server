@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer'
 
-import { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus } from '../../interface/controllers/Workers/workerControll.js';
+import { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker } from '../../interface/controllers/Workers/workerControll.js';
 import authMiddleware from '../../middlewares/accessToken.js';
 
 const router = Router();
@@ -19,6 +19,6 @@ router.route('/:id')
 router.route('/signin')
       .post(login)
 router.route('/worker/:id')
-      .get()
+      .get(getWorker)
 
 export default router;

@@ -39,9 +39,12 @@ const signup = async (req, res, next) => {
 
 const getWorker = async (req,res,next)=>{
     try {
-        
+        const workerId = req.params.id
+        const worker = await workerRepository.findWorker(workerId)
+        console.log('getworker Worker = ',worker)
+        return res.status(200).json({success:true, worker})
     } catch (error) {
-        console.log('error',error)    
+        console.log('error == ',error)    
     }
 }
 
@@ -108,4 +111,4 @@ const changeStatus = async(req,res,next)=>{
     }
 }
 
-export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus };
+export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker };

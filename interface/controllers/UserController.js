@@ -171,7 +171,11 @@ const googleLogin = async (req, res, next) => {
         email: details.email,
         name: details.name,
         googleLogin: true,
-      });
+      },
+      {
+        
+      }
+    );
       const refreshToken = jwt.generateRefreshToken(details.email);
       const accessToken = jwt.generateAccessToken(details.email, "user");
 
