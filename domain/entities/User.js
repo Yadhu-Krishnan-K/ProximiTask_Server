@@ -1,6 +1,6 @@
 class User {
-    constructor({ name, googleId, email, isActive, originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL }) {
-      // this.id = id;
+    constructor({ _id, name, googleId, email, isActive, originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL }) {
+      this.id = _id;
       this.username = name;
       this.googleId = googleId;
       this.email = email;

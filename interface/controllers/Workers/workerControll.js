@@ -4,7 +4,12 @@ import Login from "../../../domain/usecases/Workers/Login.js";
 import CustomError from "../../../config/CustomError.js";
 import jwt from "../../../utils/jwt.js";
 import uploadToCloudinary from "../../../utils/CloudinaryUpload.js";
+import CreateBookingUseCase from "../../../domain/usecases/Bookings/CreateBookingUseCase.js";
+import BookingRepository from "../../repositories/BookingRepository.js";
+import mongoose from "mongoose";
+
 const workerRepository = new WorkerRepository();
+const bookingRepository = new BookingRepository()
 
 const signup = async (req, res, next) => {
     console.log('Reached worker controller');
@@ -21,11 +26,12 @@ const signup = async (req, res, next) => {
     let croppedImgURL = croppedImageResult.secure_url
     // console.log('files === ',req.files)
     // console.log('workerData = ', workerData);
-    workerData = {...workerData,
-        originalImgURL:originalImgURL,
-        originalImgPublicId:originalImgPublicId,
-        croppedImgURL:croppedImgURL,
-        croppedImgPublicId:croppedImgPublicId
+    workerData = {
+        ...workerData,
+        originalImgURL: originalImgURL,
+        originalImgPublicId: originalImgPublicId,
+        croppedImgURL: croppedImgURL,
+        croppedImgPublicId: croppedImgPublicId
     }
     try {
         console.log(workerData)
@@ -37,14 +43,14 @@ const signup = async (req, res, next) => {
     }
 };
 
-const getWorker = async (req,res,next)=>{
+const getWorker = async (req, res, next) => {
     try {
         const workerId = req.params.id
         const worker = await workerRepository.findWorker(workerId)
-        console.log('getworker Worker = ',worker)
-        return res.status(200).json({success:true, worker})
+        console.log('getworker Worker = ', worker)
+        return res.status(200).json({ success: true, worker })
     } catch (error) {
-        console.log('error == ',error)    
+        console.log('error == ', error)
     }
 }
 
@@ -89,26 +95,59 @@ const deleteWorker = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { email, password } = req.body;
     try {
-        const refreshToken = jwt.generateRefreshToken(email,'worker');
-        const accessToken = jwt.generateAccessToken(password,'worker');
+        const refreshToken = jwt.generateRefreshToken(email, 'worker');
+        const accessToken = jwt.generateAccessToken(password, 'worker');
         const UserLoginUseCase = new Login(workerRepository);
         const worker = await UserLoginUseCase.execute({ email, password });
         console.log('worker when logging in ===== ', worker);
-        return res.status(200).json({ success: true, worker,refreshToken,accessToken });
+        return res.status(200).json({ success: true, worker, refreshToken, accessToken });
     } catch (error) {
         next(new CustomError(error.message, 500));  // Pass error to centralized handler
     }
 };
 
-const changeStatus = async(req,res,next)=>{
+const changeStatus = async (req, res, next) => {
     const worker_id = req.params.id;
     console.log('workerID = ', worker_id);
     try {
         const worker = await workerRepository.statusChange(worker_id);
-        return res.status(200).json({success:true})
+        return res.status(200).json({ success: true })
     } catch (error) {
         next(error)
     }
 }
 
-export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker };
+const createBooking = async (req, res, next) => {
+    console.log('booking starting');
+    console.log('data from body = ', req.body)
+    try {
+        const useCaseForBooking = new CreateBookingUseCase(bookingRepository)
+        const booked = await useCaseForBooking.execute(req.body)
+        console.log('booked = ', booked)
+        return res.status(200).json({ success: true })
+    } catch (error) {
+        console.log('error = ', error)
+    }
+}
+
+const getBookingsByUser = async (req, res, next) => {
+    try {
+        const userId = new mongoose.Types.ObjectId(req.params.id)
+        const bookings = await bookingRepository.getBookingsByUser(userId)
+        return res.status(200).json({success:true, list:bookings})
+        
+    } catch (error) {
+        console.log('error from getBookingsByUser = ',)
+    }
+}
+const getListOfBooking = async (req,res,next) => {
+    try {
+        const workerId = new mongoose.Types.ObjectId(req.params.id)
+        const listOfBooking = await bookingRepository.getListFromWorker(workerId)
+        return res.status(200).json({success:true, list:listOfBooking})
+    } catch (error) {
+        console.log('error from getListOfBooking = ',error)
+    }
+}
+
+export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker, createBooking, getBookingsByUser, getListOfBooking };

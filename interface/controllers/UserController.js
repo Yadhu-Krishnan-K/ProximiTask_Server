@@ -100,6 +100,7 @@ const login = async (req, res, next) => {
 
   try {
     const user = await userLogin.execute(req.body);
+
     const refreshToken = jwt.generateRefreshToken(req.body.email);
     const accessToken = jwt.generateAccessToken(req.body.email, "user");
     console.log('userData while login in === ',user)
@@ -107,7 +108,8 @@ const login = async (req, res, next) => {
     res.status(200).json({
       success: true,
       user: { 
-        name: user.username, 
+        _id: user.id,
+        name: user.username,
         email: user.email, 
         isActive:user.isActive, 
         originalImgURL:user.originalImgURL,
@@ -225,5 +227,3 @@ export {
   resendOtp,
   getUserData
 };
-
-

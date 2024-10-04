@@ -119,6 +119,25 @@ class WorkerRepository {
             throw new CustomError(error.message,error.statusCode)
         }
     }
+    // async getWorkerDetailsForListing(id){
+    //     try {
+    //         const worker = await WorkerModel.aggregate(
+    //             [
+    //                 {
+    //                     $match:{_id:id}
+    //                 }
+    //             ]
+    //         )
+    //         const necessaryData = {
+    //             name:worker.name,
+    //             category:worker.category
+    //         }
+    //         return necessaryData
+
+    //     } catch (error) {
+    //         console.log('error from worker repository when geting workerdetails = ',error)
+    //     }
+    // }
 }
 
 export default WorkerRepository;
