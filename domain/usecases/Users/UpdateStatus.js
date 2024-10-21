@@ -4,8 +4,13 @@ class UpdateStatus{
     }
 
     execute(_id){
-        const updatedUser = this.repository.updateUserStatus(_id)
-        return updatedUser
+        try {
+            
+            const updatedUser = this.repository.updateUserStatus(_id)
+            return updatedUser
+        } catch (error) {
+            throw error
+        }
     }
 }
 

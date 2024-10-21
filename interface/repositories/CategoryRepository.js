@@ -16,7 +16,7 @@ class CateRepo {
             category = category.toLowerCase()
             const cate = await CategoryModel.findOne({categoryName:category})
             if(cate){
-                throw new CustomError('Category already exist',409)
+                return {success:false,data:null,message:"category already exist"}
             }
             const newCate = new CategoryModel({ 
                 categoryName: category,
@@ -26,7 +26,8 @@ class CateRepo {
                 croppedImgURL
              });
             await newCate.save();
-            return new Category(newCate.toObject());
+            let res =  new Category(newCate.toObject());
+            return {success:true, data:res, message:""}
         } catch (error) {
             console.error('Error adding category:', error);
             throw error
@@ -39,7 +40,7 @@ class CateRepo {
             let lowerCate = category.toLowerCase()
             const cate = await CategoryModel.findOne({categoryName:lowerCate})
             if(cate){
-                throw new CustomError('Category already Exist',409)
+                return {success:false,data:null, message:"Category name already exist"}
             }
             const updatedCate = await CategoryModel.findByIdAndUpdate(
                 cateId,
@@ -49,7 +50,8 @@ class CateRepo {
             if (!updatedCate) {
                 throw new CustomError('Category not found',404);
             }
-            return new Category(updatedCate);
+            let res = new Category(updatedCate);
+            return {success:true, data:res, message:""}
         } catch (error) {
             console.error('Error updating category:', error);
             throw error

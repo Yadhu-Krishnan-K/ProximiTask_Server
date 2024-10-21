@@ -10,7 +10,7 @@ class InitialSignUp {
 
     async execute(userData,imgsData) {
         try {
-            const existingUser = await this.userRepository.findUserByEmail(userData.email);
+            const existingUser = await this.userRepository.findUserWhenRegister(userData.email);
             if (existingUser) {
                 // return { success: false, message: "User already exists",status:409 };
                 throw new CustomError('User already exist',409)

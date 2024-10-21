@@ -4,9 +4,14 @@ class GetCategory {
     }
 
     async execute(){
-        const cateList = await this.categoryRepository.getCate()
-        return cateList
-    }
+            try {
+                
+                const cateList = await this.categoryRepository.getCate()
+                return cateList
+            } catch (error) {
+                throw error
+            }
+        }
 }
 
 export default GetCategory

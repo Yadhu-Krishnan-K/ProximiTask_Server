@@ -12,9 +12,11 @@ class UserRepository {
       return user;
     } catch (error) {
       console.error('Error creating user:', error.message);
-      throw new CustomError('Failed to create user', 500);  // Internal Server Error
+      throw new CustomError('Internal Server Error', 500);  // Internal Server Error
     }
   }
+
+  
 
   async findUserByEmail(email) {
     try {
@@ -25,10 +27,21 @@ class UserRepository {
       if (user) {
         return user
       }
-      return null;
+      throw new CustomError('invalid email', 500);
     } catch (error) {
       console.error('Error finding user by email:', error.message);
       throw new CustomError('Failed to find user by email', 500);
+    }
+  }
+
+  async findUserWhenRegister(email){
+    try {
+        const user = await UserModel.findOne({ email});
+        console.log('user data from repo = ',user)
+        return user
+
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -58,7 +71,7 @@ class UserRepository {
       return new User(updatedUser.toObject());
     } catch (error) {
       console.error('Error updating user status:', error.message);
-      throw new CustomError('Failed to update user status', 500);
+      throw new CustomError('Failed to update user status', 40463);
     }
   }
 

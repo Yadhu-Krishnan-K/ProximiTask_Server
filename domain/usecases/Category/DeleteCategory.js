@@ -4,11 +4,17 @@ class DeleteCategory {
     }
 
     async execute(cateId) {
-        if (!cateId) {
-            throw new Error("Category ID is required");
+        try {
+            
+            if (!cateId) {
+                throw new Error("Category ID is required");
+            }
+            const deletedCategory = await this.categoryRepository.deleteCate(cateId);
+            return deletedCategory;
+            
+        } catch (error) {
+            throw error
         }
-        const deletedCategory = await this.categoryRepository.deleteCate(cateId);
-        return deletedCategory;
     }
 }
 

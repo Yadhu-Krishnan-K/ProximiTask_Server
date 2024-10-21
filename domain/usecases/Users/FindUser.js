@@ -15,8 +15,7 @@ class FindUser{
             console.log('user from FindUserUseCase = ',user)
             return user
         } catch (error) {
-            console.log('error from findUserUseCase',error)
-            return new CustomError(error.message,error.status)
+            throw error
         }
     }
 

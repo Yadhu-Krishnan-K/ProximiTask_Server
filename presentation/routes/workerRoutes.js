@@ -1,7 +1,20 @@
 import { Router } from 'express';
 import multer from 'multer'
 
-import { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker, createBooking, getBookingsByUser, getListOfBooking } from '../../interface/controllers/Workers/workerControll.js';
+import { 
+            signup,
+            getAllWorkers,
+            accessControll, 
+            deleteWorker, 
+            login, 
+            changeStatus, 
+            getWorker, 
+            createBooking, 
+            getBookingsByUser, 
+            getListOfBooking,
+            updateWorkerDetails,
+            getWorkersByCateName
+      } from '../../interface/controllers/Workers/workerControll.js';
 import authMiddleware from '../../middlewares/accessToken.js';
 
 const router = Router();
@@ -20,12 +33,15 @@ router.route('/signin')
       .post(login)
 router.route('/worker/:id')
       .get(getWorker)
+      .put(updateWorkerDetails)
 router.route('/booking')
       .post(createBooking)
 router.route('/booking/:id')
       .get(getBookingsByUser)
 router.route('/booking/list/:id')
       .get(getListOfBooking)
+router.route('/:cateName')
+      .get(getWorkersByCateName)
 // router.route('/workerDetailsfromBooking/id')
 //       .get()
 export default router;

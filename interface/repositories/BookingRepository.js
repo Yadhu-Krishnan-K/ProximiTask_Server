@@ -1,4 +1,6 @@
+import CustomError from "../../config/CustomError.js";
 import Booking from "../../infrastructure/db/bookingSchema.js";
+import UserModel from "../../infrastructure/db/userSchema.js";
 class BookingRepository{
     async createBooking(data){
         try {
@@ -7,6 +9,7 @@ class BookingRepository{
             return x
         } catch (error) {
             console.log('errror from createBooking from booking reppo = ',error)
+            throw new CustomError('Internal Server Error',500)
         }
     }
     async getBookingsByUser(id){
@@ -18,11 +21,12 @@ class BookingRepository{
                     }
                 ]
             )
-            
+
             
             return data
         } catch (error) {
             console.log('errror from getBookingsByUser from booking reppo = ',error)
+            throw new CustomError('Internal Server Error',500)
         }
     }
     async getListFromWorker(id){
@@ -34,11 +38,18 @@ class BookingRepository{
                     }
                 ]
             )
-            
+
+            for(let details of data){
+                let user = await UserModel.findOne({_id:details.userId})
+
+                details.userName = user.name
+            }
+            console.log('from repo = ',data)
             
             return data
         } catch (error) {
             console.log('errror from getListFromWorker from booking reppo = ',error)
+            throw new CustomError('Internal Server Error',500)
         }
     }
 

@@ -7,9 +7,10 @@ class AdminRepository{
         try {
             const admin = await AdminModel.findOne({email,password})
             if(admin){
-                return new Admin(admin.toObject())
+                let ad = new Admin(admin.toObject())
+                return {success:true,data:ad,message:''}
             }else{
-                throw new CustomError('Wrong Credentials',400)
+                return {success:false,data:null,message:"wrong email or password"}
             }
         } catch (error) {
             console.error(error)

@@ -4,7 +4,7 @@ import {v2 as cloudinary} from 'cloudinary'
 
 
 
-const uploadToCloudinary = async(buffer, folder) => {
+export const uploadToCloudinary = async(buffer, folder) => {
     cloudinary.config({
         cloud_name:'dmjh7iqqb',
         api_key: process.env.CLOUDINARY_API_KEY,
@@ -22,4 +22,12 @@ const uploadToCloudinary = async(buffer, folder) => {
     })
 }
 
-export default uploadToCloudinary
+
+export const deleteFromCloudinary = async (publicId) => {
+    try {
+        await cloudinary.uploader.destroy(publicId);
+    } catch (error) {
+        console.error('Error deleting image from Cloudinary:', error);
+        throw error;
+    }
+};

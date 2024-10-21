@@ -138,6 +138,23 @@ class WorkerRepository {
     //         console.log('error from worker repository when geting workerdetails = ',error)
     //     }
     // }
+
+    async updateWorker(workerId, data){
+        try {
+            const worker = await WorkerModel.findByIdAndUpdate(workerId,data)
+            console.log("worker after update = ",worker)
+        } catch (error) {
+            
+        }
+    }
+
+    async findByCateName(cateName){
+        try {
+            const workers = await WorkerModel.find()
+        } catch (error) {
+            console.log('error = ',error)
+        }
+    }
 }
 
 export default WorkerRepository;

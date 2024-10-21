@@ -15,7 +15,8 @@ class WorkerDto{
         originalImgURL,
         originalImgPublicId,
         croppedImgURL,
-        croppedImgPublicId
+        croppedImgPublicId,
+        leaveDays
     }
     ){
     this.name = name
@@ -34,6 +35,7 @@ class WorkerDto{
     this.originalImgPublicId = originalImgPublicId    
     this.croppedImgURL = croppedImgURL    
     this.croppedImgPublicId = croppedImgPublicId
+    this.leaveDays = leaveDays
     }
 }
 

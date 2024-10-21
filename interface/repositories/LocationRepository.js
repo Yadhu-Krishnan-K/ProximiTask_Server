@@ -1,3 +1,4 @@
+import CustomError from "../../config/CustomError.js"
 import LocationModel from "../../infrastructure/db/locationManageSchema.js"
 
 class LocationRepository{
@@ -15,16 +16,27 @@ class LocationRepository{
             return location.toObject()
             
         } catch (error) {
-            throw error
+            console.log("addLocation -- == ",error)
+            throw new CustomError('Internal Server Error',500)
         }
 
     }
     async getLocations(){
-        const locationList = await LocationModel.find()
-        return locationList
+        try {
+            const locationList = await LocationModel.find()
+            return locationList
+        } catch (error) {
+            console.log('getLocations --== ',error)
+            throw new CustomError('Internal Server Error',500)
+        }
     }
     async deleteLocation(id){
-        await LocationModel.findByIdAndDelete(id)
+        try {
+            await LocationModel.findByIdAndDelete(id)
+        } catch (error) {
+            console.log('deleteLocation -=',error);
+            throw new CustomError('Internal Server Error',500)
+        }
     }
 
 }

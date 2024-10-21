@@ -8,22 +8,27 @@ class UserLogin {
   }
 
   async execute({ email, pass }) {
-    console.log('email = ',email,', pass = ',pass)
-    const user = await this.userRepository.findUserByEmail(email);
-    console.log(user)
-    if (user) {
-      if(!user.isActive) throw new CustomError('User has no access',403)
-        const res = await comparePass(pass,user.pass)
+    try {
+      
+      console.log('email = ',email,', pass = ',pass)
+      const user = await this.userRepository.findUserByEmail(email);
+      console.log(user)
+      if (user) {
+        if(!user.isActive) throw new CustomError('User has no access',403)
+          const res = await comparePass(pass,user.pass)
         console.log('comparePass res = ',res)
-      if(res){
-        return new User(user.toObject());
+        if(res){
+          return new User(user.toObject());
+        }else{
+          throw new CustomError('Invalid password',401)
+        }
       }else{
-        throw new CustomError('Invalid password',401)
+        throw new CustomError('Invalid User',401)
       }
-    }else{
-      throw new CustomError('Invalid User',401)
+      // throw new CustomError('Invalid credentials', 401);
+    } catch (error) {
+      throw error
     }
-    // throw new CustomError('Invalid credentials', 401);
   }
 }
 

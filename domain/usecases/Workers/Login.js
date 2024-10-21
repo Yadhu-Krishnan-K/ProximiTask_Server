@@ -4,8 +4,13 @@ class Login{
     }
 
     async execute(userData){
-        const worker = await this.repository.loginWorker(userData)
-        return worker
+        try {
+            
+            const worker = await this.repository.loginWorker(userData)
+            return worker
+        } catch (error) {
+            throw error
+        }
     }
 }
 

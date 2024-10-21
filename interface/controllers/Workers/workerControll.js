@@ -3,7 +3,7 @@ import SignUp from "../../../domain/usecases/Workers/SignUp.js";
 import Login from "../../../domain/usecases/Workers/Login.js";
 import CustomError from "../../../config/CustomError.js";
 import jwt from "../../../utils/jwt.js";
-import uploadToCloudinary from "../../../utils/CloudinaryUpload.js";
+import {uploadToCloudinary} from "../../../utils/CloudinaryUpload.js";
 import CreateBookingUseCase from "../../../domain/usecases/Bookings/CreateBookingUseCase.js";
 import BookingRepository from "../../repositories/BookingRepository.js";
 import mongoose from "mongoose";
@@ -51,6 +51,7 @@ const getWorker = async (req, res, next) => {
         return res.status(200).json({ success: true, worker })
     } catch (error) {
         console.log('error == ', error)
+        next(error)
     }
 }
 
@@ -127,6 +128,7 @@ const createBooking = async (req, res, next) => {
         return res.status(200).json({ success: true })
     } catch (error) {
         console.log('error = ', error)
+        next(error)
     }
 }
 
@@ -138,16 +140,53 @@ const getBookingsByUser = async (req, res, next) => {
         
     } catch (error) {
         console.log('error from getBookingsByUser = ',)
+        next(error)
     }
 }
 const getListOfBooking = async (req,res,next) => {
     try {
         const workerId = new mongoose.Types.ObjectId(req.params.id)
         const listOfBooking = await bookingRepository.getListFromWorker(workerId)
+        console.log('list of booking from getList of booking ==---==',listOfBooking)
         return res.status(200).json({success:true, list:listOfBooking})
     } catch (error) {
         console.log('error from getListOfBooking = ',error)
+        next(error)
     }
 }
 
-export { signup, getAllWorkers, accessControll, deleteWorker, login, changeStatus, getWorker, createBooking, getBookingsByUser, getListOfBooking };
+const updateWorkerDetails = async (req,res,next) => {
+    console.log('data from req = ',req.body)
+    console.log("workerId = ",req.params)
+    try {
+        const data = req.body
+        const workerId = new mongoose.Types.ObjectId(req.params.id)
+        workerRepository.updateWorker(workerId,data)
+        res.status(200).json({success:true, data})
+    } catch (error) {
+        console.log('error',error)
+    }
+}
+
+const getWorkersByCateName = async (req,res,next) => {
+    try {
+        // const workers = await workerRepository.
+    } catch (error) {
+        console.log('error = ',error)
+    }
+}
+
+export { 
+        signup, 
+        getAllWorkers, 
+        accessControll, 
+        deleteWorker, 
+        login, 
+        changeStatus, 
+        getWorker, 
+        createBooking, 
+        getBookingsByUser, 
+        getListOfBooking, 
+        updateWorkerDetails,
+        getWorkersByCateName 
+    };

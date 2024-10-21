@@ -35,7 +35,8 @@ const workerSchema = new Schema({
     croppedImgPublicId:{
         type:String,
         required:true
-    }
+    },
+    leaveDays:[String]
 })
 
 const WorkerModel = mongoose.model('Worker',workerSchema);

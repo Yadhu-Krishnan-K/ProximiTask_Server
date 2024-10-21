@@ -3,7 +3,7 @@ import AddLocation from "../../../domain/usecases/Location/AddLocationUseCase.js
 
 const locationRepository = new LocationRepository()
 
-const addLocation = async(req,res) => {
+const addLocation = async(req,res,next) => {
     console.log('req.body from addLocartion == = ',req.body)
     try {
         const location = new AddLocation(locationRepository).execute(req.body)
@@ -11,10 +11,11 @@ const addLocation = async(req,res) => {
     } catch (error) {
         console.log(error)
         console.dir(error)
+        next(error)
     }
 }
 
-const getLocations = async(req,res) => {
+const getLocations = async(req,res,next) => {
     try {
         console.log('here get location')
         const data = await locationRepository.getLocations()
@@ -35,10 +36,11 @@ const getLocations = async(req,res) => {
         res.json({success:true,placeData:locData})
     } catch (error) {
         console.log(error)
+        next(error)
     }
 }
 
-const deleteLocation = async(req,res) => {
+const deleteLocation = async(req,res,next) => {
     try {
         console.log('reached delete location....')
         const locationId = req.params.id
@@ -47,6 +49,7 @@ const deleteLocation = async(req,res) => {
         res.json({success:true})
     } catch (error) {
         console.log(error)
+        next(error)
     }
 }
 

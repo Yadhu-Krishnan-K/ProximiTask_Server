@@ -1,4 +1,4 @@
-import uploadToCloudinary from "./CloudinaryUpload.js";
+import {uploadToCloudinary} from "./CloudinaryUpload.js";
 
 class ImgUpload{
     constructor(originalImgBuffer,croppedImgBuffer){

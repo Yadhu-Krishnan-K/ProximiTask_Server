@@ -1,3 +1,5 @@
+import CustomError from "../../../config/CustomError.js"
+
 class AdminLogin{
     constructor(repository){
         
