@@ -11,7 +11,7 @@ class FindUser{
             console.log('repo = ',this.repository)
             console.log('inside executing FindUser usecase, email = ',email);
             
-            const user = await this.repository.findUserByEmail(email)
+            const user = await this.repository.findUserWhenRegister(email)
             console.log('user from FindUserUseCase = ',user)
             return user
         } catch (error) {

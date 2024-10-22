@@ -75,6 +75,16 @@ class CateRepo {
         const cateList = await CategoryModel.find()
         return cateList
     }
+
+    async getCateByName(cateName){
+        try {
+            const category = await CategoryModel.findOne({categoryName:cateName})
+            return category
+        } catch (error) {
+            console.log('error from getCateByName repo',error)
+            throw error
+        }
+    }
 }
 
 export default CateRepo;

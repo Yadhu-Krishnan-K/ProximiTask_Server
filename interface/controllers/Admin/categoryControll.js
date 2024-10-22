@@ -95,9 +95,20 @@ const getCategory = async (req, res, next) => {
     }
 }
 
+const getCateByName = async (req,res,next) => {
+    try {
+        const cateName = req.params.cateName
+        const category = await CateRepository.getCateByName(cateName)
+        res.status(200).json({success:true,category})
+    } catch (error) {
+        next(error)
+    }
+}
+
 export {
     addCategory,
     updateCategory,
     deleteCategory,
-    getCategory
+    getCategory,
+    getCateByName
 }

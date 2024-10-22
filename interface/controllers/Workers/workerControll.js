@@ -165,14 +165,18 @@ const updateWorkerDetails = async (req,res,next) => {
         res.status(200).json({success:true, data})
     } catch (error) {
         console.log('error',error)
+        next(error)
     }
 }
 
 const getWorkersByCateName = async (req,res,next) => {
     try {
-        // const workers = await workerRepository.
+        const cateName = req.params.cateName
+        const workers = await workerRepository.findByCateName(cateName)
+        res.status(200).json({success:true, workerList:workers})
     } catch (error) {
         console.log('error = ',error)
+        next(error)
     }
 }
 

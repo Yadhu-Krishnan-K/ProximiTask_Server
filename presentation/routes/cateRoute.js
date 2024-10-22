@@ -1,7 +1,13 @@
 import { Router } from "express";
 import multer from 'multer'
 
-import { addCategory,deleteCategory,updateCategory,getCategory } from "../../interface/controllers/Admin/categoryControll.js";
+import { 
+          addCategory,
+          deleteCategory,
+          updateCategory,
+          getCategory,
+          getCateByName 
+       } from "../../interface/controllers/Admin/categoryControll.js";
 import authMiddleware from "../../middlewares/accessToken.js";
 
 const router = Router();
@@ -16,5 +22,7 @@ router.route('/:id')
 .put(authMiddleware('admin'), upload.fields([{name:'originalImage'},{name:'croppedImage'}]), updateCategory)
 .delete(authMiddleware('admin'), deleteCategory)
 
+router.route('/:cateName')
+.get(getCateByName)
 
 export default router

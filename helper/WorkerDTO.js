@@ -1,5 +1,6 @@
 class WorkerDto{
     constructor({
+        _id,
         name,
         email,
         area,
@@ -19,6 +20,7 @@ class WorkerDto{
         leaveDays
     }
     ){
+    this._id = _id
     this.name = name
     this.email = email
     this.area = area

@@ -150,7 +150,10 @@ class WorkerRepository {
 
     async findByCateName(cateName){
         try {
-            const workers = await WorkerModel.find()
+            const workers = await WorkerModel.find({category:cateName})
+            let workersList = workers.map((worker,ind,arr)=> new WorkerDto(worker))
+            console.log('workersList = ',workersList)
+            return workersList
         } catch (error) {
             console.log('error = ',error)
         }

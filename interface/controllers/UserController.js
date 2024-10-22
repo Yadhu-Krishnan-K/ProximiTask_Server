@@ -162,7 +162,7 @@ const googleLogin = async (req, res, next) => {
   const { token } = req.body;
   try {
     const details = jwt.decoded(token);
-    console.log(details);
+    console.log('details from google user = ',details);
     console.log(`email from google login=${details.email}---------------------================----------------------==========================`)
     const findUserUseCase = new FindUser(userRepository);
     const user = await findUserUseCase.execute(details.email);
@@ -173,17 +173,24 @@ const googleLogin = async (req, res, next) => {
         email: details.email,
         name: details.name,
         googleLogin: true,
+        originalImgURL:details.picture,
+        originalImgPublicId: details.picture,
+        croppedImgURL:details.picture,
+        croppedImgPublicId:details.picture,
       },
-      {
-        
-      }
+      
     );
       const refreshToken = jwt.generateRefreshToken(details.email);
       const accessToken = jwt.generateAccessToken(details.email, "user");
 
       return res.status(200).json({
         success: true,
-        user: { name: user.username, email: user.email, isActive:user.isActive },
+        user: { name: user.username, email: user.email, isActive:user.isActive,
+          originalImgURL:user.originalImgURL,
+        originalImgPublicId: user.originalImgPublicId,
+        croppedImgURL:user.croppedImgURL,
+        croppedImgPublicId:user.croppedImgPublicId 
+         },
         refreshToken,
         accessToken,
       });
@@ -195,7 +202,12 @@ const googleLogin = async (req, res, next) => {
 
       res.status(200).json({
         success: true,
-        user: { name: details.name, email: details.email, isActive:user.isActive },
+        user: { name: details.name, email: details.email, isActive:user.isActive,
+          originalImgURL:user.originalImgURL,
+          originalImgPublicId: user.originalImgPublicId,
+          croppedImgURL:user.croppedImgURL,
+          croppedImgPublicId:user.croppedImgPublicId 
+         },
         refreshToken,
         accessToken,
       });
