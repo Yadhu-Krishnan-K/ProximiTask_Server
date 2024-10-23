@@ -26,7 +26,7 @@ class WorkerDto{
     this.area = area
     this.lat = lat
     this.long = long
-    this.category = category
+    this.category_id = category_id
     this.phoneNumber = phoneNumber    
     this.idCard = idCard    
     this.idCardNum = idCardNum    

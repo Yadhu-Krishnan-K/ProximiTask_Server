@@ -2,6 +2,7 @@ import WorkerModel from "../../infrastructure/db/workerSchema.js";
 import Worker from "../../domain/entities/Worker.js";
 import CustomError from "../../config/CustomError.js";
 import WorkerDto from "../../helper/WorkerDTO.js";
+import mongoose from "mongoose";
 class WorkerRepository {
     async createWorker(workerDetails) {
         console.log('workerDetails from repo=============------------', workerDetails)
@@ -13,7 +14,7 @@ class WorkerRepository {
                 long: workerDetails.long,
                 lat: workerDetails.lat,
                 area: workerDetails.area,
-                category: workerDetails.category,
+                category_id: new mongoose.Types.ObjectId(workerDetails.category),
                 phoneNumber: workerDetails.phone,
                 idCard: workerDetails.idType,
                 idCardNum: workerDetails.idNumber,

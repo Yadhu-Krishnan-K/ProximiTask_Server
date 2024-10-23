@@ -7,7 +7,10 @@ const workerSchema = new Schema({
     area:String,
     lat:String,
     long:String,
-    category:String,
+    category_id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    },
     phoneNumber:String,
     idCard:String,
     idCardNum:String,

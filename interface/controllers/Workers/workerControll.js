@@ -7,14 +7,21 @@ import {uploadToCloudinary} from "../../../utils/CloudinaryUpload.js";
 import CreateBookingUseCase from "../../../domain/usecases/Bookings/CreateBookingUseCase.js";
 import BookingRepository from "../../repositories/BookingRepository.js";
 import mongoose from "mongoose";
+import otpService from "../../../services/otpService.js";
+import CateRepo from "../../repositories/CategoryRepository.js";
+import client from "../../../config/redisClient.js";
+import ImgUpload from "../../../utils/ImgUpload.js";
 
 const workerRepository = new WorkerRepository();
 const bookingRepository = new BookingRepository()
+const cateRepository = new CateRepo()
 
 const signup = async (req, res, next) => {
     console.log('Reached worker controller');
     let workerData = req.body;
     const files = req.files
+
+    // const category =await cateRepository.getCateByName(workerData.category)
 
     const originalImageBuffer = files.originalImg[0].buffer
     const croppedImageBuffer = files.croppedImg[0].buffer
@@ -24,8 +31,8 @@ const signup = async (req, res, next) => {
     let originalImgURL = originalImageResult.secure_url
     let croppedImgPublicId = croppedImageResult.public_id
     let croppedImgURL = croppedImageResult.secure_url
-    // console.log('files === ',req.files)
-    // console.log('workerData = ', workerData);
+
+    
     workerData = {
         ...workerData,
         originalImgURL: originalImgURL,
@@ -35,13 +42,65 @@ const signup = async (req, res, next) => {
     }
     try {
         console.log(workerData)
-        const worker = new SignUp(workerRepository);
-        const data = await worker.execute(workerData); // Await the result of async call
-        return res.status(201).json({ success: true, workerData });
+        // const worker = new SignUp(workerRepository);
+        // const data = await worker.execute(workerData); // Await the result of async call
+        const workerDatastring = JSON.stringify(workerData)
+        console.log('workerData converted to string')
+        client.set('workerData',workerDatastring)
+        console.log('workerData stored in redis client')
+        const otp = await otpService(workerData.email)
+        console.log('otp service runned....');
+
+        client.setEx('wOtp',30,otp)
+        console.log('otp stored in redis for 30 seconds');
+
+        console.log('going to return response....');
+        
+        return res.status(201).json({ success: true });
+
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        console.log('error = ',error)
+        next(error);  // Pass error to centralized handler
     }
 };
+const resendOtp = async(req, res, next) => {
+    console.log("resend otp reached");
+    try {
+      let data = JSON.parse(await client.get("workerData"));
+      console.log("workerData = ", data);
+      const otp = await otpService(data.email)
+      client.setEx('wOtp', 30, otp)
+      console.log('otp = ',otp)
+      res.status(200).json({success:true})
+    } catch (error) {
+      console.log('errror = ',error.message)
+      next(error)
+    }
+};
+
+const postSignupWorks = async (req, res, next) => {
+    console.log("reached sign up");
+  try {
+    const otp = req.body.otp;
+    const cliOtp = await client.get("wOtp");
+    const ttl = await client.ttl("wOtp");
+    console.log(cliOtp, ttl);
+
+    if (otp == cliOtp && ttl > 0) {
+      const data = JSON.parse(await client.get("workerData"));
+       const worker = new SignUp(workerRepository);
+       const result = await worker.execute(data); 
+
+      console.log("going to send response, by the way user = ",user);
+      res.status(201).json({ success: true });
+    } else {
+      throw new CustomError("Invalid or expired OTP", 400);
+    }
+  } catch (error) {
+    console.error("Error during signUp:", error);
+    next(error);
+  }
+}
 
 const getWorker = async (req, res, next) => {
     try {
@@ -182,6 +241,8 @@ const getWorkersByCateName = async (req,res,next) => {
 
 export { 
         signup, 
+        resendOtp,
+        postSignupWorks,
         getAllWorkers, 
         accessControll, 
         deleteWorker, 

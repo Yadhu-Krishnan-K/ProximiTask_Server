@@ -3,6 +3,8 @@ import multer from 'multer'
 
 import { 
             signup,
+            resendOtp,
+            postSignupWorks,
             getAllWorkers,
             accessControll, 
             deleteWorker, 
@@ -26,6 +28,9 @@ router.post('/signup',upload.fields([{name:'originalImg'},{name:'croppedImg'}]),
 router.route('/')
 .get(getAllWorkers)
 .patch(authMiddleware('admin'), accessControll)
+router.route('/resend-otp',resendOtp)
+router.route('/postSignup')
+      .post(postSignupWorks)
 router.route('/:id')
 .delete(authMiddleware('admin'), deleteWorker)
 .patch(changeStatus)
