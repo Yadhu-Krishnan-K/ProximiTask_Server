@@ -25,13 +25,15 @@ const signup = async (req, res, next) => {
 
     const originalImageBuffer = files.originalImg[0].buffer
     const croppedImageBuffer = files.croppedImg[0].buffer
-    const originalImageResult = await uploadToCloudinary(originalImageBuffer, 'your_folder_name/original_images');
-    const croppedImageResult = await uploadToCloudinary(croppedImageBuffer, 'your_folder_name/cropped_images');
+    const [originalImageResult, croppedImageResult] = await Promise.all([
+        uploadToCloudinary(originalImageBuffer, 'your_folder_name/original_images'),
+        uploadToCloudinary(croppedImageBuffer, 'your_folder_name/cropped_images')
+    ]);    
     let originalImgPublicId = originalImageResult.public_id
     let originalImgURL = originalImageResult.secure_url
     let croppedImgPublicId = croppedImageResult.public_id
-    let croppedImgURL = croppedImageResult.secure_url
-
+    let croppedImgURL = croppedImageResult.secure_url   
+    console.log('completed uploading to cloudinary---------------------------------')
     
     workerData = {
         ...workerData,
@@ -49,7 +51,7 @@ const signup = async (req, res, next) => {
         client.set('workerData',workerDatastring)
         console.log('workerData stored in redis client')
         const otp = await otpService(workerData.email)
-        console.log('otp service runned....');
+        console.log('otp service runned.... otp = ',otp);
 
         client.setEx('wOtp',30,otp)
         console.log('otp stored in redis for 30 seconds');
@@ -69,7 +71,7 @@ const resendOtp = async(req, res, next) => {
       let data = JSON.parse(await client.get("workerData"));
       console.log("workerData = ", data);
       const otp = await otpService(data.email)
-      client.setEx('wOtp', 30, otp)
+      client.setEx('wOtp', 59, otp)
       console.log('otp = ',otp)
       res.status(200).json({success:true})
     } catch (error) {
@@ -81,17 +83,19 @@ const resendOtp = async(req, res, next) => {
 const postSignupWorks = async (req, res, next) => {
     console.log("reached sign up");
   try {
-    const otp = req.body.otp;
+    const otp = req.body.otp.join("");
+    console.log('reached otp = ',otp)
     const cliOtp = await client.get("wOtp");
     const ttl = await client.ttl("wOtp");
     console.log(cliOtp, ttl);
 
     if (otp == cliOtp && ttl > 0) {
+        console.log('otp verifucation success-0--==--=')
       const data = JSON.parse(await client.get("workerData"));
        const worker = new SignUp(workerRepository);
        const result = await worker.execute(data); 
 
-      console.log("going to send response, by the way user = ",user);
+    //   console.log("going to send response, by the way user = ",user);
       res.status(201).json({ success: true });
     } else {
       throw new CustomError("Invalid or expired OTP", 400);

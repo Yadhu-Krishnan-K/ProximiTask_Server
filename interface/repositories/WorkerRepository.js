@@ -45,12 +45,24 @@ class WorkerRepository {
             throw new CustomError('Failed to retrieve workers list', 500);
         }
     }
+    
     async findWorker(workerId){
         try {
             const worker = await WorkerModel.findById(workerId)
             return new WorkerDto(worker.toObject())
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    async workerExist(email){
+        try {
+            const worker = await WorkerModel.findOne({email:email})
+            if(worker){
+                throw new CustomError("Worker already exist",400)
+            }
+        } catch (error) {
+            throw error(error)
         }
     }
 
