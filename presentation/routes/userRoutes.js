@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer'
 
-import { signUp, login, initiateRegistration, getUsers, updateStatus, googleLogin, resendOtp, getUserData } from '../../interface/controllers/UserController.js';
+import { signUp, login, initiateRegistration, getUsers, updateStatus, googleLogin, resendOtp, getUserData, requestForPasswordChange } from '../../interface/controllers/UserController.js';
 import authMiddleware from '../../middlewares/accessToken.js';
 
 const router = Router();
@@ -20,4 +20,7 @@ router.route('/:email')
       
 router.route('/google-login')
       .post(googleLogin)
+
+router.route('/security')
+      .put(requestForPasswordChange)
 export default router;

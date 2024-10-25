@@ -68,10 +68,30 @@ class UserRepository {
         { new: true } // Return the updated document
       );
 
-      return new User(updatedUser.toObject());
+      return updatedUser.toObject();
     } catch (error) {
       console.error('Error updating user status:', error.message);
       throw new CustomError('Failed to update user status', 40463);
+    }
+  }
+  async checkPass(password,email){
+    try {
+      const user = await UserModel.findOne({email,pass:password})
+      if(user){
+        return {success:true}
+      }else{
+        return {success:false}
+      }
+    } catch (error) {
+      throw error
+    }
+  }
+  async changePass(email,pass){
+    try {
+      const user = await UserModel.findOneAndUpdate({email},{pass:pass},{new:true})
+      
+    } catch (error) {
+      throw error
     }
   }
 

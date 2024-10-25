@@ -230,6 +230,22 @@ const getUserData = async(req,res,next) => {
   }
 }
 
+const requestForPasswordChange = async (req,res,next) => {
+  try {
+    const {oldPassword, newPassword, email} = req.body
+    const oldPassCheck = await userRepository.checkPass(oldPassword,email)
+    if(oldPassCheck.success){
+      await userRepository.changePass(email,newPassword)
+    }else{
+      throw new CustomError("Old password Incorrect!",400)
+    }
+    return res.status(200).json({success:true})
+  } catch (error) {
+    console.log(error)
+    next(error)
+  }
+}
+
 export {
   signUp,
   login,
@@ -238,5 +254,6 @@ export {
   updateStatus,
   googleLogin,
   resendOtp,
-  getUserData
+  getUserData,
+  requestForPasswordChange
 };
