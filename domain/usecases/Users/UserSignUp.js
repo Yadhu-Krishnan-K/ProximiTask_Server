@@ -8,7 +8,6 @@ class UserSignUp {
 
   async execute(userDetails,userImgs) {
     try {
-      
       const user = await this.userRepository.createUser(userDetails,userImgs);
       console.log('user = ',user)
       return new User(user);

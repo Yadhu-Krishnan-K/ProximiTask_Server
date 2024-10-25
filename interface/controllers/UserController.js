@@ -240,7 +240,7 @@ const requestForPasswordChange = async (req,res,next) => {
       throw new CustomError("Old password Incorrect!",400)
     }
     return res.status(200).json({success:true})
-  } catch (error) {
+  } catch (error) {                                                                                                                                              
     console.log(error)
     next(error)
   }

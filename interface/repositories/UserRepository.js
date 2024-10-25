@@ -1,6 +1,9 @@
 import UserModel from '../../infrastructure/db/userSchema.js';
 // import User from '../../domain/entities/User.js';
 import CustomError from '../../config/CustomError.js';
+import { comparePass } from '../../utils/comparePass.js';
+import bcrypt from "bcryptjs";
+
 
 class UserRepository {
   async createUser(userDetails,userImgs) {
@@ -76,9 +79,15 @@ class UserRepository {
   }
   async checkPass(password,email){
     try {
-      const user = await UserModel.findOne({email,pass:password})
+      const user = await UserModel.findOne({email})
       if(user){
-        return {success:true}
+        let res = await comparePass(password,user.pass)
+        if(res){
+          return {success:true}
+        }
+        else{
+          return {success:false}
+        }
       }else{
         return {success:false}
       }
@@ -88,7 +97,8 @@ class UserRepository {
   }
   async changePass(email,pass){
     try {
-      const user = await UserModel.findOneAndUpdate({email},{pass:pass},{new:true})
+      const hash = await bcrypt.hash(pass, 10)
+      const user = await UserModel.findOneAndUpdate({email},{pass:hash},{new:true})
       
     } catch (error) {
       throw error
