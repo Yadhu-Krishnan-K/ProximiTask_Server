@@ -11,9 +11,17 @@ const workerSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
-    phoneNumber:String,
+    phoneNumber:{
+        type:String,
+        required:true,
+        unique:true
+    },
     idCard:String,
-    idCardNum:String,
+    idCardNum:{
+        type:String,
+        required:true,
+        unique:true
+    },
     requestInitiated:Boolean,
     active:{
         type:Boolean,

@@ -123,7 +123,7 @@ const getAllWorkers = async (req, res, next) => {
         const workerList = await workerRepository.findWorkers();
         return res.status(200).json({ success: true, list: workerList });
     } catch (error) {
-        next(new CustomError('Failed to fetch worker list', 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 
@@ -137,7 +137,7 @@ const accessControll = async (req, res, next) => {
             throw new CustomError('Worker not found', 404);
         }
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 

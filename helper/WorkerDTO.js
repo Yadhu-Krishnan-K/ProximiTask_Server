@@ -6,7 +6,7 @@ class WorkerDto{
         area,
         lat,
         long,
-        category,
+        category_id,
         phoneNumber,
         idCard,
         idCardNum,
