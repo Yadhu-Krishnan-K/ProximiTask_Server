@@ -6,6 +6,7 @@ import jwt from "../../../utils/jwt.js"
 
 const AdminRepo = new AdminRepository()
 const validator = new Validator()
+
 const adminLogin = async(req,res,next) =>{
     // console.log('request reached')
     try {

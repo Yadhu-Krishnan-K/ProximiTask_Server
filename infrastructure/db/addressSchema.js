@@ -1,7 +1,7 @@
 import mongoose, { Schema, model, trusted } from 'mongoose';
 const AddressSchema = new Schema({
   userId:{
-    type:mongoose.Types.ObjectId,
+    type:mongoose.Schema.Types.ObjectId,
     ref:'User',
     required:true
   },

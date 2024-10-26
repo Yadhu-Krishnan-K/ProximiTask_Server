@@ -38,9 +38,12 @@ class WorkerRepository {
 
     async findWorkers() {
         try {
-            const workerList = await WorkerModel.find();
-            console.log('workers = ', workerList);
-            return workerList;
+            const workerList = await WorkerModel.find().populate("category_id")
+            const list = workerList.map((worker,index,arr)=>{
+                return new WorkerDto(worker)
+            })
+            console.log('workers = ', list);
+            return list;
         } catch (error) {
             throw new CustomError('Failed to retrieve workers list', 500);
         }
