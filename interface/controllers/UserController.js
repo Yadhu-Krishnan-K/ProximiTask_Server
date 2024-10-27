@@ -133,7 +133,7 @@ const getUsers = async (req, res, next) => {
     res.status(200).json({ success: true, data: userList });
   } catch (error) {
     console.error("Error fetching users:", error);
-    next(new CustomError("An error occurred while fetching users.", 500));
+    next(error);
   }
 };
 
@@ -155,7 +155,7 @@ const updateStatus = async (req, res, next) => {
     res.status(200).json({ success: true, message: "User status updated" });
   } catch (error) {
     console.error("Error updating status:", error);
-    next(new CustomError("Server error", 500));
+    next(error);
   }
 };
 

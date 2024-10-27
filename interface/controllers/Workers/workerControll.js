@@ -11,6 +11,7 @@ import otpService from "../../../services/otpService.js";
 import CateRepo from "../../repositories/CategoryRepository.js";
 import client from "../../../config/redisClient.js";
 import ImgUpload from "../../../utils/ImgUpload.js";
+import { sendConfirmationEmail } from "../../../services/confirmationMail.js";
 
 const workerRepository = new WorkerRepository();
 const bookingRepository = new BookingRepository()
@@ -132,6 +133,7 @@ const accessControll = async (req, res, next) => {
     try {
         const worker = await workerRepository.access(worker_id);
         if (worker) {
+            await sendConfirmationEmail(worker.email,worker.name)
             return res.status(201).json({ success: true });
         } else {
             throw new CustomError('Worker not found', 404);
@@ -152,7 +154,7 @@ const deleteWorker = async (req, res, next) => {
             throw new CustomError('Failed to delete worker', 500);
         }
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 
@@ -166,7 +168,7 @@ const login = async (req, res, next) => {
         console.log('worker when logging in ===== ', worker);
         return res.status(200).json({ success: true, worker, refreshToken, accessToken });
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 
