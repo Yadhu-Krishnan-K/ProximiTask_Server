@@ -27,10 +27,10 @@ const bookingSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    selectedTime: {
-      type: String,
-      required: true,
-    },
+    // selectedTime: {
+    //   type: String,
+    //   required: true,
+    // },
     additionalNotes: {
       type: String,
       default: '',

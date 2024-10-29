@@ -58,7 +58,7 @@ class WorkerRepository {
     
     async findWorker(workerId){
         try {
-            const worker = await WorkerModel.findById(workerId)
+            const worker = await WorkerModel.findById(workerId).populate("category_id")
             return new WorkerDto(worker.toObject())
         } catch (error) {
             console.log(error)
@@ -181,6 +181,28 @@ class WorkerRepository {
             return workersList
         } catch (error) {
             console.log('error = ',error)
+            throw error
+        }
+    }
+
+    async addLeave(id, date){
+        try {
+            const updatedWorker = await WorkerModel.findOneAndUpdate(
+                { _id: id },
+                { $push: { leaveDays: date.date } }, // Push new leave day to leaveDays array
+                { new: true } // Return the updated document
+              );
+              if(updatedWorker)return true
+        } catch (error) {
+            throw error
+        }
+    }
+    async getLeave(id){
+        try {
+            const list = await WorkerModel.findById(id, { leaveDays: 1, _id: 0 });
+            console.log(list)
+            return list
+        } catch (error) {
             throw error
         }
     }

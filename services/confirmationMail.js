@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
+import { createTransport } from "nodemailer";
 
-const transporter = nodemailer.createTransport({
+const transporter = createTransport({
     service : 'gmail',
     secure:true,
     port:465,
@@ -45,7 +45,7 @@ const sendEmail = async (mailOptions) => {
     }
 };
 
-module.exports = {
+export {
     sendConfirmationEmail,
-    sendFailureEmail,
+    sendFailureEmail
 };
