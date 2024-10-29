@@ -6,7 +6,8 @@ import {
           deleteCategory,
           updateCategory,
           getCategory,
-          getCateByName 
+          getCateByName,
+          getCate 
        } from "../../interface/controllers/Admin/categoryControll.js";
 import authMiddleware from "../../middlewares/accessToken.js";
 
@@ -21,6 +22,7 @@ router.route('/')
 router.route('/:id')
 .put(authMiddleware('admin'), upload.fields([{name:'originalImage'},{name:'croppedImage'}]), updateCategory)
 .delete(authMiddleware('admin'), deleteCategory)
+.get(getCate)
 
 router.route('/:cateName')
 .get(getCateByName)

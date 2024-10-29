@@ -15,7 +15,10 @@ import {
             getBookingsByUser, 
             getListOfBooking,
             updateWorkerDetails,
-            getWorkersByCateName
+            getWorkersByCateName,
+            addedLeave,
+            getLeaves,
+            bookedDates
       } from '../../interface/controllers/Workers/workerControll.js';
 import authMiddleware from '../../middlewares/accessToken.js';
 
@@ -26,8 +29,8 @@ const upload = multer({storage})
 router.post('/signup',upload.fields([{name:'originalImg'},{name:'croppedImg'}]),signup)
 
 router.route('/')
-.get(getAllWorkers)
-.patch(authMiddleware('admin'), accessControll)
+      .get(getAllWorkers)
+      .patch(authMiddleware('admin'), accessControll)
 router.route('/resendOtp')
       .get(resendOtp)
 router.route('/postSignup')
@@ -35,10 +38,10 @@ router.route('/postSignup')
 router.route('/:id')
       .delete(authMiddleware('admin'), deleteWorker)
       .patch(authMiddleware('admin'), changeStatus)
+      .get(getWorker)
 router.route('/signin')
       .post(login)
 router.route('/worker/:id')
-      .get(getWorker)
       .put(updateWorkerDetails)
 router.route('/booking')
       .post(createBooking)
@@ -48,6 +51,17 @@ router.route('/booking/list/:id')
       .get(getListOfBooking)
 router.route('/:cateName')
       .get(getWorkersByCateName)
+
+//booked dates
+router.route('/:id/booked-dates')
+      .get(bookedDates)
+//leave dates
+router.route('/leave-dates/:id')
+      .get(getLeaves)
+      .patch(addedLeave)
+
 // router.route('/workerDetailsfromBooking/id')
 //       .get()
+
+
 export default router;

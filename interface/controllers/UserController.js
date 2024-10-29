@@ -127,15 +127,33 @@ const login = async (req, res, next) => {
   }
 };
 
+// Controller: userController.js
 const getUsers = async (req, res, next) => {
   try {
-    const userList = await userRepository.findAllUsers();
-    res.status(200).json({ success: true, data: userList });
+    const { page = 1, limit = 2 } = req.query; // Default to page 1, 2 items per page
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const [userList, totalUsers] = await Promise.all([
+      userRepository.findAllUsers(pageNumber, limitNumber),
+      userRepository.countUsers(),
+    ]);
+
+    const totalPages = Math.ceil(totalUsers / limitNumber);
+
+    res.status(200).json({
+      success: true,
+      data: userList,
+      totalPages,
+      currentPage: pageNumber,
+    });
   } catch (error) {
     console.error("Error fetching users:", error);
-    next(new CustomError("An error occurred while fetching users.", 500));
+    next(error);
   }
 };
+
+
 
 const updateStatus = async (req, res, next) => {
   try {
@@ -155,7 +173,7 @@ const updateStatus = async (req, res, next) => {
     res.status(200).json({ success: true, message: "User status updated" });
   } catch (error) {
     console.error("Error updating status:", error);
-    next(new CustomError("Server error", 500));
+    next(error);
   }
 };
 

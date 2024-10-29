@@ -3,10 +3,16 @@ import Worker from "../../domain/entities/Worker.js";
 import CustomError from "../../config/CustomError.js";
 import WorkerDto from "../../helper/WorkerDTO.js";
 import mongoose from "mongoose";
+import { sendFailureEmail } from "../../services/confirmationMail.js";
 class WorkerRepository {
     async createWorker(workerDetails) {
         console.log('workerDetails from repo=============------------', workerDetails)
+
         try {
+            const existing = await WorkerModel.findOne({email:workerDetails.email})
+            if(existing){
+                throw new CustomError('Worker already exist',409)
+            }
             const worker = new WorkerModel({
                 name: workerDetails.fullName,
                 email: workerDetails.email,
@@ -32,6 +38,7 @@ class WorkerRepository {
             return new Worker(worker.toObject());
         } catch (error) {
             console.log('error = ',error)
+            throw error
             // throw new CustomError('Failed to create worker', 500);   
         }
     }
@@ -45,16 +52,17 @@ class WorkerRepository {
             console.log('workers = ', list);
             return list;
         } catch (error) {
-            throw new CustomError('Failed to retrieve workers list', 500);
+            throw error
         }
     }
     
     async findWorker(workerId){
         try {
-            const worker = await WorkerModel.findById(workerId)
+            const worker = await WorkerModel.findById(workerId).populate("category_id")
             return new WorkerDto(worker.toObject())
         } catch (error) {
             console.log(error)
+            throw error
         }
     }
 
@@ -65,7 +73,7 @@ class WorkerRepository {
                 throw new CustomError("Worker already exist",400)
             }
         } catch (error) {
-            throw error(error)
+            throw error
         }
     }
 
@@ -82,7 +90,7 @@ class WorkerRepository {
             
             return worker;
         } catch (error) {
-            throw new CustomError('Failed to update worker access', 500);
+            throw error
         }
     }
 
@@ -94,10 +102,11 @@ class WorkerRepository {
             if (!worker) {
                 throw new CustomError('Worker not found', 404);
             }
+            await sendFailureEmail(worker.email,worker.name)
             
             return true;
         } catch (error) {
-            throw new CustomError('Failed to delete worker', 500);
+            throw error
         }
     }
 
@@ -119,7 +128,7 @@ class WorkerRepository {
 
             return worker.toObject();
         } catch (error) {
-            throw new CustomError(error.message, 500);
+            throw error
         }
     }
 
@@ -132,7 +141,7 @@ class WorkerRepository {
             return worker
         } catch (error) {
             console.log('error from changing status worker === ', error)
-            throw new CustomError(error.message,error.statusCode)
+            throw error
         }
     }
     // async getWorkerDetailsForListing(id){
@@ -160,7 +169,7 @@ class WorkerRepository {
             const worker = await WorkerModel.findByIdAndUpdate(workerId,data)
             console.log("worker after update = ",worker)
         } catch (error) {
-            
+            throw error
         }
     }
 
@@ -172,6 +181,29 @@ class WorkerRepository {
             return workersList
         } catch (error) {
             console.log('error = ',error)
+            throw error
+        }
+    }
+
+    async addLeave(id, date){
+        try {
+            const updatedWorker = await WorkerModel.findOneAndUpdate(
+                { _id: id },
+                { $push: { leaveDays: date.date } }, // Push new leave day to leaveDays array
+                { new: true } // Return the updated document
+              );
+              if(updatedWorker)return true
+        } catch (error) {
+            throw error
+        }
+    }
+    async getLeave(id){
+        try {
+            const list = await WorkerModel.findById(id, { leaveDays: 1, _id: 0 });
+            console.log(list)
+            return list
+        } catch (error) {
+            throw error
         }
     }
 }

@@ -9,7 +9,7 @@ class BookingRepository{
             return x
         } catch (error) {
             console.log('errror from createBooking from booking reppo = ',error)
-            throw new CustomError('Internal Server Error',500)
+            throw error
         }
     }
     async getBookingsByUser(id){
@@ -26,7 +26,7 @@ class BookingRepository{
             return data
         } catch (error) {
             console.log('errror from getBookingsByUser from booking reppo = ',error)
-            throw new CustomError('Internal Server Error',500)
+            throw error
         }
     }
     async getListFromWorker(id){
@@ -49,7 +49,15 @@ class BookingRepository{
             return data
         } catch (error) {
             console.log('errror from getListFromWorker from booking reppo = ',error)
-            throw new CustomError('Internal Server Error',500)
+            throw error
+        }
+    }
+    async getBookedDates(id){
+        try {
+            const list = await Booking.find({workerId:id},{_id:0,selectedDate:1})
+            return list
+        } catch (error) {
+            throw error
         }
     }
 

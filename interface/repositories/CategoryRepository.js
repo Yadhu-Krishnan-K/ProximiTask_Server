@@ -85,6 +85,14 @@ class CateRepo {
             throw error
         }
     }
+    async getCateById(cateId){
+        try {
+            const category = await CategoryModel.findById(cateId)
+            return category
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 export default CateRepo;

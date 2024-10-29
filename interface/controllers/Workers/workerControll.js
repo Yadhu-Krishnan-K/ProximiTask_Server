@@ -11,6 +11,7 @@ import otpService from "../../../services/otpService.js";
 import CateRepo from "../../repositories/CategoryRepository.js";
 import client from "../../../config/redisClient.js";
 import ImgUpload from "../../../utils/ImgUpload.js";
+import { sendConfirmationEmail } from "../../../services/confirmationMail.js";
 
 const workerRepository = new WorkerRepository();
 const bookingRepository = new BookingRepository()
@@ -132,6 +133,7 @@ const accessControll = async (req, res, next) => {
     try {
         const worker = await workerRepository.access(worker_id);
         if (worker) {
+            await sendConfirmationEmail(worker.email,worker.name)
             return res.status(201).json({ success: true });
         } else {
             throw new CustomError('Worker not found', 404);
@@ -152,7 +154,7 @@ const deleteWorker = async (req, res, next) => {
             throw new CustomError('Failed to delete worker', 500);
         }
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 
@@ -166,7 +168,7 @@ const login = async (req, res, next) => {
         console.log('worker when logging in ===== ', worker);
         return res.status(200).json({ success: true, worker, refreshToken, accessToken });
     } catch (error) {
-        next(new CustomError(error.message, 500));  // Pass error to centralized handler
+        next(error);  // Pass error to centralized handler
     }
 };
 
@@ -197,6 +199,7 @@ const createBooking = async (req, res, next) => {
 
 const getBookingsByUser = async (req, res, next) => {
     try {
+        console.log('params == ',req.params.id)
         const userId = new mongoose.Types.ObjectId(req.params.id)
         const bookings = await bookingRepository.getBookingsByUser(userId)
         return res.status(200).json({success:true, list:bookings})
@@ -243,6 +246,43 @@ const getWorkersByCateName = async (req,res,next) => {
     }
 }
 
+const addedLeave = async (req,res,next) => {
+    try {
+        const leaveDate = req.body
+        const worker_id = req.params.id
+        const result = await workerRepository.addLeave(worker_id,leaveDate)
+        console.log('added leave date = ',leaveDate)
+        if(result)return res.status(201).json({success:true})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+const getLeaves = async (req,res,next) => {
+    try {
+        console.log('reached getLeaves')
+        const worker_id = req.params.id
+        const list = await workerRepository.getLeave(worker_id)
+        return res.status(200).json({success:true,list:list.leaveDays})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
+const bookedDates = async (req,res,next) => {
+    try {
+        const workerId = req.params.id
+        const list = await bookingRepository.getBookedDates(workerId)
+        console.log('list = ',list)
+        return res.status(200).json({success:true, list})
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
+
 export { 
         signup, 
         resendOtp,
@@ -257,5 +297,8 @@ export {
         getBookingsByUser, 
         getListOfBooking, 
         updateWorkerDetails,
-        getWorkersByCateName 
+        getWorkersByCateName,
+        addedLeave,
+        getLeaves,
+        bookedDates 
     };
