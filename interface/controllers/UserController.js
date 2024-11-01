@@ -214,8 +214,7 @@ const googleLogin = async (req, res, next) => {
         accessToken,
       });
     } else {
-      // const userLogin = new UserLogin(userRepository);
-      // const userG = await userLogin.execute();
+
       const refreshToken = jwt.generateRefreshToken(details.email);
       const accessToken = jwt.generateAccessToken(details.email, "user");
 
