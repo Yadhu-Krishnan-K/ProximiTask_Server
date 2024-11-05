@@ -72,8 +72,12 @@ class CateRepo {
     }
 
     async getCate(){
-        const cateList = await CategoryModel.find()
-        return cateList
+        try {
+            const cateList = await CategoryModel.find()
+            return cateList
+        } catch (error) {
+            throw error
+        }
     }
 
     async getCateByName(cateName){
@@ -81,7 +85,6 @@ class CateRepo {
             const category = await CategoryModel.findOne({categoryName:cateName})
             return category
         } catch (error) {
-            console.log('error from getCateByName repo',error)
             throw error
         }
     }

@@ -9,16 +9,27 @@ class WorkerRepository {
         console.log('workerDetails from repo=============------------', workerDetails)
 
         try {
-            const existing = await WorkerModel.findOne({email:workerDetails.email})
-            if(existing){
-                throw new CustomError('Worker already exist',409)
-            }
+            const existing = await WorkerModel.findOne({
+                $or: [
+                  { email: workerDetails.email },
+                  { phone: workerDetails.phone }
+                ]
+              });
+              
+              if (existing) {
+                if (existing.email === workerDetails.email) {
+                  throw new CustomError("Email is already in use.",409);
+                } else if (existing.phone === workerDetails.phone) {
+                  throw new CustomError("Phone number is already in use.",409);
+                }
+              }
+              console.log('type of loc_id = ',typeof workerDetails.location_id)
+              console.log('loc_id = ',workerDetails.location_id)
             const worker = new WorkerModel({
                 name: workerDetails.fullName,
                 email: workerDetails.email,
                 password: workerDetails.password,
-                long: workerDetails.long,
-                lat: workerDetails.lat,
+                location_id: workerDetails.location_id,
                 area: workerDetails.area,
                 category_id: new mongoose.Types.ObjectId(workerDetails.category),
                 phoneNumber: workerDetails.phone,

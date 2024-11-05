@@ -1,4 +1,4 @@
-import {uploadToCloudinary} from "../../../utils/CloudinaryUpload.js";
+import {uploadToCloudinary, deleteFromCloudinary} from "../../../utils/CloudinaryUpload.js";
 import CateRepo from "../../repositories/CategoryRepository.js";
 import AddCategory from "../../../domain/usecases/Category/AddCategory.js";
 import DeleteCategory from "../../../domain/usecases/Category/DeleteCategory.js";
@@ -15,8 +15,8 @@ const addCategory = async (req, res, next) => {
         const originalImageBuffer = files.originalImage[0].buffer;
     const croppedImageBuffer = files.croppedImage[0].buffer;
 
-    const originalImageResult = await uploadToCloudinary(originalImageBuffer, 'your_folder_name/original_images');
-    const croppedImageResult = await uploadToCloudinary(croppedImageBuffer, 'your_folder_name/cropped_images');
+    const originalImageResult = await uploadToCloudinary(originalImageBuffer, 'Category/original_images');
+    const croppedImageResult = await uploadToCloudinary(croppedImageBuffer, 'Category/cropped_images');
     let originalImgPublicId = originalImageResult.public_id
     let originalImgURL = originalImageResult.secure_url
     let croppedImgPublicId = croppedImageResult.public_id
@@ -49,14 +49,14 @@ const updateCategory = async (req, res, next) => {
         if (files) {
             if (files.originalImage) {
                 const originalImageBuffer = files.originalImage[0].buffer;
-                const originalImageResult = await uploadToCloudinary(originalImageBuffer, 'your_folder_name/original_images');
+                const originalImageResult = await uploadToCloudinary(originalImageBuffer, 'Category/original_images');
                 originalImgPublicId = originalImageResult.public_id;
                 originalImgURL = originalImageResult.secure_url;
             }
 
             if (files.croppedImage) {
                 const croppedImageBuffer = files.croppedImage[0].buffer;
-                const croppedImageResult = await uploadToCloudinary(croppedImageBuffer, 'your_folder_name/cropped_images');
+                const croppedImageResult = await uploadToCloudinary(croppedImageBuffer, 'Category/cropped_images');
                 croppedImgPublicId = croppedImageResult.public_id;
                 croppedImgURL = croppedImageResult.secure_url;
             }
@@ -78,6 +78,8 @@ const deleteCategory = async (req, res, next) => {
         const cateId = req.params.id;
         const deleteCateUseCase = new DeleteCategory(CateRepository);
         const deleted = await deleteCateUseCase.execute(cateId);
+        await deleteFromCloudinary(deleted.originalImgPublicId)
+        await deleteFromCloudinary(deleted.croppedImgPublicId)
         return res.status(200).json({ success: true });
     } catch (error) {
         next(error);  // Pass error to centralized handler

@@ -3,21 +3,26 @@ import LocationModel from "../../infrastructure/db/locationManageSchema.js"
 
 class LocationRepository{
     async addLocation(details){
+        console.log('detalis from location repo = ',details)
+        const data = JSON.parse(details)
         try {
             const newLocation = new LocationModel({
-                locationName: details.name,
-                address:details.address,
-                loc:{
-                    lat:details.lat,
-                    lng:details.lng
-                }
+                coords: {
+                    lat: data.coords.lat,
+                    long: data.coords.long,
+                },
+                name: data.name,
+                city: data.city,
+                state: data.state,
+                nation: data.nation,
+                pincode: data.pincode
             })
             const location = await newLocation.save()
-            return location.toObject()
+            return location._id
             
         } catch (error) {
             console.log("addLocation -- == ",error)
-            throw new CustomError('Internal Server Error',500)
+            throw error
         }
 
     }
@@ -27,7 +32,7 @@ class LocationRepository{
             return locationList
         } catch (error) {
             console.log('getLocations --== ',error)
-            throw new CustomError('Internal Server Error',500)
+            throw error
         }
     }
     async deleteLocation(id){
@@ -35,7 +40,7 @@ class LocationRepository{
             await LocationModel.findByIdAndDelete(id)
         } catch (error) {
             console.log('deleteLocation -=',error);
-            throw new CustomError('Internal Server Error',500)
+            throw error
         }
     }
 

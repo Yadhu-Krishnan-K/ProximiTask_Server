@@ -15,7 +15,7 @@ class UserRepository {
       return user;
     } catch (error) {
       console.error('Error creating user:', error.message);
-      throw new CustomError('Internal Server Error', 500);  // Internal Server Error
+      throw error
     }
   }
 
@@ -30,10 +30,10 @@ class UserRepository {
       if (user) {
         return user
       }
-      throw new CustomError('invalid email', 500);
+      throw new CustomError('invalid email', 404);
     } catch (error) {
       console.error('Error finding user by email:', error.message);
-      throw new CustomError('Failed to find user by email', 500);
+      throw error
     }
   }
 
@@ -45,6 +45,7 @@ class UserRepository {
 
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
 
@@ -84,7 +85,7 @@ class UserRepository {
       return updatedUser.toObject();
     } catch (error) {
       console.error('Error updating user status:', error.message);
-      throw new CustomError('Failed to update user status', 40463);
+      throw error;
     }
   }
   async checkPass(password,email){

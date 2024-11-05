@@ -5,8 +5,11 @@ const workerSchema = new Schema({
     email:String,
     password:String,
     area:String,
-    lat:String,
-    long:String,
+    location_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Location', // Refers to the Location model
+        required:true
+    },
     category_id:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'

@@ -4,8 +4,8 @@ class AddLocation{
     }
     async execute(locationdetails){
         try {
-            const location = await this.repository.addLocation(locationdetails)
-            return location
+            const location_id = await this.repository.addLocation(locationdetails)
+            return location_id
         } catch (error) {
             throw error
         }

@@ -12,10 +12,13 @@ import CateRepo from "../../repositories/CategoryRepository.js";
 import client from "../../../config/redisClient.js";
 import ImgUpload from "../../../utils/ImgUpload.js";
 import { sendConfirmationEmail } from "../../../services/confirmationMail.js";
+import AddLocation from "../../../domain/usecases/Location/AddLocationUseCase.js";
+import LocationRepository from "../../repositories/LocationRepository.js";
 
 const workerRepository = new WorkerRepository();
 const bookingRepository = new BookingRepository()
 const cateRepository = new CateRepo()
+const locationRepository = new LocationRepository()
 
 const signup = async (req, res, next) => {
     console.log('Reached worker controller');
@@ -44,7 +47,7 @@ const signup = async (req, res, next) => {
         croppedImgPublicId: croppedImgPublicId
     }
     try {
-        console.log(workerData)
+        // console.log(workerData)
         // const worker = new SignUp(workerRepository);
         // const data = await worker.execute(workerData); // Await the result of async call
         const workerDatastring = JSON.stringify(workerData)
@@ -91,8 +94,13 @@ const postSignupWorks = async (req, res, next) => {
     console.log(cliOtp, ttl);
 
     if (otp == cliOtp && ttl > 0) {
-        console.log('otp verifucation success-0--==--=')
-      const data = JSON.parse(await client.get("workerData"));
+       console.log('otp verifucation success-0--==--=')
+       const data = JSON.parse(await client.get("workerData"));
+       console.log('loc_details = ',data.location)
+        const location = new AddLocation(locationRepository)
+        const location_id = await location.execute(data.location)
+        console.log('location_id from worker controller = 📍📍📍📍 =',location_id)
+        data.location_id = location_id
        const worker = new SignUp(workerRepository);
        const result = await worker.execute(data); 
 
