@@ -23,7 +23,9 @@ const locationRepository = new LocationRepository()
 const signup = async (req, res, next) => {
     console.log('Reached worker controller');
     let workerData = req.body;
-    const files = req.files
+    const files = req.files;
+    // console.log('body = ',workerData)
+    // console.log('file = ',files)
 
     // const category =await cateRepository.getCateByName(workerData.category)
 
@@ -33,6 +35,7 @@ const signup = async (req, res, next) => {
         uploadToCloudinary(originalImageBuffer, 'your_folder_name/original_images'),
         uploadToCloudinary(croppedImageBuffer, 'your_folder_name/cropped_images')
     ]);    
+    console.log('upload to cloudinary...')
     let originalImgPublicId = originalImageResult.public_id
     let originalImgURL = originalImageResult.secure_url
     let croppedImgPublicId = croppedImageResult.public_id
@@ -47,7 +50,8 @@ const signup = async (req, res, next) => {
         croppedImgPublicId: croppedImgPublicId
     }
     try {
-        // console.log(workerData)
+        
+        // console.log('worker data = ',workerData)
         // const worker = new SignUp(workerRepository);
         // const data = await worker.execute(workerData); // Await the result of async call
         const workerDatastring = JSON.stringify(workerData)

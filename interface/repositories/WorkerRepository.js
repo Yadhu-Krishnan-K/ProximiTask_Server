@@ -56,7 +56,7 @@ class WorkerRepository {
 
     async findWorkers() {
         try {
-            const workerList = await WorkerModel.find().populate("category_id")
+            const workerList = await WorkerModel.find().populate("category_id").populate("location_id")
             const list = workerList.map((worker,index,arr)=>{
                 return new WorkerDto(worker)
             })

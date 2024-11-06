@@ -8,6 +8,8 @@ import morgan from 'morgan';
 
 import {config} from 'dotenv'
 
+// import { sendConfirmationEmail,sendFailureEmail } from './services/confirmationMail.js';
+
 
 import userRoutes from './presentation/routes/userRoutes.js';
 import workerRoutes from './presentation/routes/workerRoutes.js'
@@ -20,6 +22,7 @@ import errorHandler from './middlewares/errorHandler.js';
 // import { any } from 'promise';
 
 const app = express();
+// sendConfirmationEmail('yadhuy28@gmail.com','yadhu')
 config()
 app.use(morgan("dev"))
 const DB_URL = process.env.DB_URL

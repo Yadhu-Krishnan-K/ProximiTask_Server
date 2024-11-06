@@ -1,19 +1,20 @@
 import { createTransport } from "nodemailer";
 
-const transporter = createTransport({
-    service : 'gmail',
-    secure:true,
-    port:465,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASS,
-    },
-});
+// const transporter = createTransport({
+//     service : 'gmail',
+//     secure:true,
+//     port:465,
+//     auth: {
+//       user: process.env.EMAIL,
+//       pass: process.env.EMAIL_PASS,
+//     },
+// });
 
 // Success email
 const sendConfirmationEmail = async (to, name) => {
+    
     const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: process.env.EMAIL,
         to,
         subject: 'Confirmation Email',
         text: `Hello ${name},\n\nYour access has been confirmed successfully.`,
@@ -25,7 +26,7 @@ const sendConfirmationEmail = async (to, name) => {
 // Failure email
 const sendFailureEmail = async (to, name) => {
     const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: process.env.EMAIL,
         to,
         subject: 'Access Request Failed',
         text: `Hello ${name},\n\nUnfortunately, your access request could not be processed.`,
@@ -36,6 +37,16 @@ const sendFailureEmail = async (to, name) => {
 
 // General email sending function
 const sendEmail = async (mailOptions) => {
+    const transporter = createTransport({
+        service : 'gmail',
+        secure:true,
+        port:465,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASS,
+        },
+    });
+    
     try {
         await transporter.sendMail(mailOptions);
         console.log(`Email sent to ${mailOptions.to}`);

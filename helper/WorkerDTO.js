@@ -3,9 +3,7 @@ class WorkerDto{
         _id,
         name,
         email,
-        area,
-        lat,
-        long,
+        location_id,
         category_id,
         phoneNumber,
         idCard,
@@ -23,9 +21,7 @@ class WorkerDto{
     this._id = _id
     this.name = name
     this.email = email
-    this.area = area
-    this.lat = lat
-    this.long = long
+    this.location_id = location_id
     this.category_id = category_id
     this.phoneNumber = phoneNumber    
     this.idCard = idCard    
