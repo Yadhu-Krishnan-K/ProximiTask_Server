@@ -6,9 +6,9 @@ import bcrypt from "bcryptjs";
 
 
 class UserRepository {
-  async createUser(userDetails,userImgs) {
+  async createUser(userDetails) {
     try {
-      const data = Object.assign({},userDetails,userImgs);
+      const data = Object.assign({},userDetails);
       data.role = 'user'
       const user = new UserModel(data);
       await user.save();
@@ -111,6 +111,21 @@ class UserRepository {
       const hash = await bcrypt.hash(pass, 10)
       const user = await UserModel.findOneAndUpdate({email},{pass:hash},{new:true})
       
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+
+  async changeUserNameAndEmail(id,userName,email){
+    try {
+      await UserModel.findByIdAndUpdate(id,{
+        name:userName,
+        email:email
+      },
+    {new:true})
+    return {success:true}
     } catch (error) {
       throw error
     }

@@ -27,6 +27,9 @@ const locationSchema = new Schema({
       },
       pincode: {
         type: String,
+      },
+      phone:{
+        type:Number
       }
     
 })

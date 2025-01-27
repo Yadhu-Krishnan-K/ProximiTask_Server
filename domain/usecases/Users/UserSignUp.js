@@ -6,9 +6,9 @@ class UserSignUp {
   } 
 
 
-  async execute(userDetails,userImgs) {
+  async execute(userDetails) {
     try {
-      const user = await this.userRepository.createUser(userDetails,userImgs);
+      const user = await this.userRepository.createUser(userDetails);
       console.log('user = ',user)
       return new User(user);
     } catch (error) {

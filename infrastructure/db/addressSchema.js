@@ -17,9 +17,21 @@ const AddressSchema = new Schema({
     type:String,
     required:true
   },
+  state:{
+    type:String,
+    required:true
+  },
+  pin:{
+    type:Number,
+    required:true
+  },
   phone:{
     type:String,
     required:true
+  },
+  defaultAddress:{
+    type:Boolean,
+    default:false
   }
 });
 

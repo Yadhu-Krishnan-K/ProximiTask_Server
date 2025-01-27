@@ -4,7 +4,6 @@ const workerSchema = new Schema({
     name:String,
     email:String,
     password:String,
-    area:String,
     location_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Location', // Refers to the Location model

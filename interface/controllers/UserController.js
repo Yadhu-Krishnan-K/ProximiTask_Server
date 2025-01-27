@@ -7,9 +7,11 @@ import otpService from "../../services/otpService.js";
 import bcrypt from "bcryptjs";
 import jwt from "../../utils/jwt.js";
 import UpdateStatus from "../../domain/usecases/Users/UpdateStatus.js";
+import UpdateUserNameAndEmail from "../../domain/usecases/Users/UpdateUserName.js";
 import CustomError from "../../config/CustomError.js";
 import FindUser from "../../domain/usecases/Users/FindUser.js";
 import ImgUpload from "../../utils/ImgUpload.js";
+import mongoose, { Mongoose } from "mongoose";
 // import { FaEye } from "react-icons/fa";
 // import { FaEyeSlash } from "react-icons/fa";
 // import { name } from "ejs";
@@ -17,17 +19,10 @@ import ImgUpload from "../../utils/ImgUpload.js";
 const userRepository = new UserRepository();
 
 const initiateRegistration = async (req, res, next) => {
-  
-  console.log("reached initialSignup, body=", req.body);
-  const imgsData = req.files;
-  console.log('imgData from initaiteRegistration == ',imgsData)
 
 
   const userData = req.body;
-  // const imgUpload = new ImgUpload(originalImageBuffer,croppedImageBuffer)
-  // const [originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL] = await imgUpload.uploadImages()
-
-
+  
   const initialSignUp = new InitialSignUp({
     userRepository: new UserRepository(),
     otpService,
@@ -36,7 +31,7 @@ const initiateRegistration = async (req, res, next) => {
   });
 
   try {
-    const response = await initialSignUp.execute(userData,imgsData);
+    const response = await initialSignUp.execute(userData);
     console.log("res = ", response);
     res
       .status(response.status)
@@ -72,18 +67,10 @@ const signUp = async (req, res, next) => {
 
     if (otp == cliOtp && ttl > 0) {
       const data = JSON.parse(await client.get("userData"));
-
-      const originalImageBuffer = data.imgs.userImg[0].buffer
-      const croppedImageBuffer = data.imgs.croppedImg[0].buffer
-      const imgUpload = new ImgUpload(originalImageBuffer,croppedImageBuffer)
-      const [originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL] = await imgUpload.uploadImages()
-      let imgObj = {
-        originalImgPublicId, originalImgURL, croppedImgPublicId, croppedImgURL
-      }
       console.log("userData = ", data);
 
       const userSignUp = new UserSignUp(userRepository);
-      const user = await userSignUp.execute(data,imgObj);
+      const user = await userSignUp.execute(data);
       console.log("going to send response, by the way user = ",user);
       res.status(201).json({ success: true });
     } else {
@@ -106,6 +93,9 @@ const login = async (req, res, next) => {
     const accessToken = jwt.generateAccessToken(req.body.email, "user");
     console.log('userData while login in === ',user)
     // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
+    res.cookie("refreshToken",refreshToken,{ httpOnly: true })
+    res.cookie("accessToken",accessToken,{ httpOnly: true })
+
     res.status(200).json({
       success: true,
       user: { 
@@ -113,13 +103,11 @@ const login = async (req, res, next) => {
         name: user.username,
         email: user.email, 
         isActive:user.isActive, 
-        originalImgURL:user.originalImgURL,
-        originalImgPublicId: user.originalImgPublicId,
-        croppedImgURL:user.croppedImgURL,
-        croppedImgPublicId:user.croppedImgPublicId 
+        // originalImgURL:user.originalImgURL,
+        // originalImgPublicId: user.originalImgPublicId,
+        // croppedImgURL:user.croppedImgURL,
+        // croppedImgPublicId:user.croppedImgPublicId 
       },
-      refreshToken,
-      accessToken
     });
   } catch (error) {
     console.error("Error during login:", error);
@@ -202,6 +190,7 @@ const googleLogin = async (req, res, next) => {
       const refreshToken = jwt.generateRefreshToken(details.email);
       const accessToken = jwt.generateAccessToken(details.email, "user");
 
+      
       return res.status(200).json({
         success: true,
         user: { name: user.username, email: user.email, isActive:user.isActive,
@@ -209,9 +198,7 @@ const googleLogin = async (req, res, next) => {
         originalImgPublicId: user.originalImgPublicId,
         croppedImgURL:user.croppedImgURL,
         croppedImgPublicId:user.croppedImgPublicId 
-         },
-        refreshToken,
-        accessToken,
+         }
       });
     } else {
 
@@ -263,6 +250,23 @@ const requestForPasswordChange = async (req,res,next) => {
   }
 }
 
+const userEmailOrAndNameUpdate = async (req,res,next) => {
+  try {
+    console.log('name and email = ',req.body);
+    console.log('params._id = ',req.params.id)
+    const {name,email} = req.body
+    const id = new mongoose.Types.ObjectId(req.params.id)
+    const updateUseCase = new UpdateUserNameAndEmail(userRepository)
+    const status = updateUseCase.execute(id,name,email)
+    if(status.success){
+      res.status(201).json({success:true})
+    }
+  } catch (error) {
+    console.log('error = ',error)
+    next(error)
+  }
+}
+
 export {
   signUp,
   login,
@@ -272,5 +276,6 @@ export {
   googleLogin,
   resendOtp,
   getUserData,
-  requestForPasswordChange
+  requestForPasswordChange,
+  userEmailOrAndNameUpdate
 };

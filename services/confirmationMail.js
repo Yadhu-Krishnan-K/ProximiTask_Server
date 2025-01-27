@@ -1,14 +1,4 @@
-import { createTransport } from "nodemailer";
-
-// const transporter = createTransport({
-//     service : 'gmail',
-//     secure:true,
-//     port:465,
-//     auth: {
-//       user: process.env.EMAIL,
-//       pass: process.env.EMAIL_PASS,
-//     },
-// });
+import { createTransport } from "nodemailer";   
 
 // Success email
 const sendConfirmationEmail = async (to, name) => {

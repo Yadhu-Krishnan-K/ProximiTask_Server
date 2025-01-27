@@ -6,15 +6,13 @@ const UserSchema = new Schema({
   },
   email: {
     type:String,
+    unique:true,
     required:true
   },
   role:{
-    type:String,
-    default:'user'
-  },
-  googleLogin:{
-    type:Boolean,
-    default:false
+    type: [String], // Array of roles
+    enum: ['user', 'admin', 'worker'], // Restrict role values
+    default: ['user'],
   },
   pass: {
     type:String,
@@ -27,21 +25,20 @@ const UserSchema = new Schema({
   },
   originalImgURL:{
     type:String,
-    required:true
+    default:""
   },
   originalImgPublicId:{
       type:String,
-      required:true
+      default:""
   },
   croppedImgURL:{
       type:String,
-      required:true
+      default:""
   },
   croppedImgPublicId:{
       type:String,
-      required:true
+      default:""
   }
-  
 });
 
 const UserModel = model('User', UserSchema);
