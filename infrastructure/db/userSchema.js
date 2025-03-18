@@ -1,4 +1,4 @@
-import { Schema, model, trusted } from 'mongoose';
+import mongoose, { Schema, model, trusted } from 'mongoose';
 const UserSchema = new Schema({
   name: {
     type:String,
@@ -38,6 +38,10 @@ const UserSchema = new Schema({
   croppedImgPublicId:{
       type:String,
       default:""
+  },
+  address:{
+    type:mongoose.Schema.Types.ObjectId,
+    Ref:'Address'
   }
 });
 

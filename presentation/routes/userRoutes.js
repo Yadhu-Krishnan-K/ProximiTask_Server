@@ -2,18 +2,20 @@ import { Router } from 'express';
 import multer from 'multer'
 
 import { 
-      signUp, 
-      login, 
-      initiateRegistration, 
       getUsers, 
       updateStatus, 
-      googleLogin, 
       resendOtp, 
       getUserData, 
       requestForPasswordChange, 
-      userEmailOrAndNameUpdate 
-} from '../../interface/controllers/UserController.js';
+      userEmailOrAndNameUpdate, 
+      searchNeed
+} from '../../interface/controllers/Users/UserController.js';
 import authMiddleware from '../../middlewares/accessToken.js';
+import {
+      login,
+      googleLogin
+} from '../../interface/controllers/Users/loginController.js';
+import { initiateRegistration, signUp } from '../../interface/controllers/Users/signupController.js';
 
 const router = Router();
 const storage = multer.memoryStorage()
@@ -36,6 +38,8 @@ router.route('/security')
       .put(requestForPasswordChange)
 router.route('/update/:id')
       .patch(userEmailOrAndNameUpdate)
+
+router.get('/workers-categories/:text',searchNeed)
 
 // router.route('/address')
 //       .post('createNewAddress')

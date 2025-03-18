@@ -1,14 +1,5 @@
-import mongoose, { Schema, model, trusted } from 'mongoose';
+import mongoose, { Mongoose, Schema, model, trusted } from 'mongoose';
 const AddressSchema = new Schema({
-  userId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:'User',
-    required:true
-  },
-  state:{
-    type:String,
-    required:true
-  },
   dist:{
     type:String,
     required:true
@@ -32,8 +23,13 @@ const AddressSchema = new Schema({
   defaultAddress:{
     type:Boolean,
     default:false
+  },
+  locationId:{
+    type: mongoose.Schema.Types.ObjectId,
+    Ref:"Location",
+    required:false
   }
 });
 
-const AddressModel = model('address', AddressSchema);
+const AddressModel = model('Address', AddressSchema);
 export default AddressModel;

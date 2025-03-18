@@ -22,6 +22,7 @@ import errorHandler from './middlewares/errorHandler.js';
 // import { any } from 'promise';
 
 const app = express();
+// console.dir(app)
 // sendConfirmationEmail('yadhuy28@gmail.com','yadhu')
 config()
 app.use(morgan("dev"))

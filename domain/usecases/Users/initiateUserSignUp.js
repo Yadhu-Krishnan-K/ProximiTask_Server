@@ -15,10 +15,9 @@ class InitialSignUp {
                 // return { success: false, message: "User already exists",status:409 };
                 throw new CustomError('User already exist',409)
             }
-            console.log(userData)
             const otp = await this.otpService(userData.email)
-            const hashPass = await this.bcrypt.hash(userData.pass, 10);
-            userData.pass = hashPass
+            const hashPass = await this.bcrypt.hash(userData.password, 10);
+            userData.password = hashPass
             const userDataString = JSON.stringify(userData);
 
             await this.redisClient.set('userData', userDataString);

@@ -23,7 +23,11 @@ async function sendOTP(email) {
   };
 
   try {
+    console.log('sending email');
+    
     await transporter.sendMail(mailOptions)
+    console.log('email sent');
+    
     return otp;
   } catch (error) {
     throw new Error('Failed to send OTP');
