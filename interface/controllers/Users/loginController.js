@@ -24,9 +24,9 @@ const login = async (req, res, next) => {
           name: user.username,
           email: user.email, 
           isActive:user.isActive, 
-          // originalImgURL:user.originalImgURL,
+          originalImgURL:user.originalImgURL,
           // originalImgPublicId: user.originalImgPublicId,
-          // croppedImgURL:user.croppedImgURL,
+          croppedImgURL:user.croppedImgURL,
           // croppedImgPublicId:user.croppedImgPublicId 
         },
       });
