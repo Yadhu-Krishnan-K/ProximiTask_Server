@@ -2,19 +2,21 @@ import jwt, { decode } from 'jsonwebtoken';
 import CustomError from '../config/CustomError.js';
 const { sign, verify } = jwt
 
-const generateAccessToken = (email,role) => {
-  console.log('email = ',email, ' role = ',role)
-  const expiresIN = process.env.TOKEN_EXPIRATION
-  let accessToken = sign({email:email,role:role}, process.env.ACCESS_TOKEN_SECRET, { expiresIn: expiresIN });
-  console.log('accessToken after generating = ',accessToken)
+const generateAccessToken = (user) => {
+  const accessToken = jwt.sign(
+    { userId: user._id, roles: user.roles }, // Include roles in payload
+    process.env.ACCESS_TOKEN_SECRET,
+    { expiresIn: '15m' }
+  );
   return accessToken
 };
 
-const generateRefreshToken = (email) => {
-  const expiresIN = process.env.REFRESH_TOKEN_EXPIRATION
-  const secret = process.env.REFRESH_TOKEN_SECRET;
-  console.log('secret = ',secret)
-  let refreshToken = sign({email:email}, secret, { expiresIn: expiresIN });
+const generateRefreshToken = (user) => {
+  const refreshToken = jwt.sign(
+    { userId: user._id },
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: '7d' }
+  );
   return refreshToken
 };
 

@@ -10,13 +10,23 @@ const login = async (req, res, next) => {
     try {
       const user = await userLogin.execute(req.body);
   
-      const refreshToken = jwt.generateRefreshToken(req.body.email);
-      const accessToken = jwt.generateAccessToken(req.body.email, "user");
+      const refreshToken = jwt.generateRefreshToken(user);
+      const accessToken = jwt.generateAccessToken(user);
       console.log('userData while login in === ',user)
       // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
       res.cookie("refreshToken",refreshToken,{ httpOnly: true })
       res.cookie("accessToken",accessToken,{ httpOnly: true })
   
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly:true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      res.json({ accessToken, roles: user.roles });
+
+
       res.status(200).json({
         success: true,
         user: { 

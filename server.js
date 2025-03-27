@@ -16,7 +16,6 @@ import workerRoutes from './presentation/routes/workerRoutes.js'
 import adminRoutes from './presentation/routes/adminRoutes.js'
 import locationRoutes from './presentation/routes/locationRoutes.js'
 import refresh from './presentation/routes/tokenRoute.js'
-import authMiddleware from './middlewares/accessToken.js';
 import cateRoute from './presentation/routes/cateRoute.js'
 import errorHandler from './middlewares/errorHandler.js';
 // import { any } from 'promise';
@@ -34,8 +33,6 @@ app.use(express.urlencoded({extended:true}))
 
 app.use(cookieParser())
 
-
-
 app.use('/users', userRoutes);
 app.use('/workers',workerRoutes)
 app.use('/admin',adminRoutes);
@@ -43,12 +40,8 @@ app.use('/refresh',refresh)
 app.use('/category',cateRoute)
 app.use('/location',locationRoutes)
 
-app.get('/test',authMiddleware('user'),(req,res)=>{
-  console.log('reached route')
-  return res.json({hello:'world'})
-})
-
 app.use(errorHandler)
+
 
 mongoose.connect(DB_URL)
   .then(() => {console.log('MongoDB connected')

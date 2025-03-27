@@ -16,12 +16,12 @@ const storage = multer.memoryStorage()
 const upload = multer({storage})
 
 router.route('/')
-.post(authMiddleware('admin'), upload.fields([{name:'originalImage'},{name:'croppedImage'}]), addCategory)
+.post(authMiddleware, upload.fields([{name:'originalImage'},{name:'croppedImage'}]), addCategory)
 .get(getCategory)
 
 router.route('/:id')
-.put(authMiddleware('admin'), upload.fields([{name:'originalImage'},{name:'croppedImage'}]), updateCategory)
-.delete(authMiddleware('admin'), deleteCategory)
+.put(authMiddleware, upload.fields([{name:'originalImage'},{name:'croppedImage'}]), updateCategory)
+.delete(authMiddleware, deleteCategory)
 .get(getCate)
 
 router.route('/:cateName')

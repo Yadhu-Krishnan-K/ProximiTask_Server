@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import multer from 'multer'
 
+import limiter from '../../middlewares/express-rate-limit.js';
+
 import { 
       getUsers, 
       updateStatus, 
@@ -23,11 +25,11 @@ const upload = multer({storage})
 
 router.post('/initiateSignup', initiateRegistration);
 router.post('/signup',signUp)
-router.post('/login', login);
+router.post('/login', limiter, login);
 router.post('/resend-otp',resendOtp)
 router.route('/')
-      .get(authMiddleware('admin'), getUsers)
-      .patch(authMiddleware('admin'), updateStatus)
+      .get(authMiddleware, getUsers)
+      .patch(authMiddleware, updateStatus)
 router.route('/:email')
       .get(getUserData)
       

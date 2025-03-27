@@ -9,7 +9,7 @@ const UserSchema = new Schema({
     unique:true,
     required:true
   },
-  role:{
+  roles:{
     type: [String], // Array of roles
     enum: ['user', 'admin', 'worker'], // Restrict role values
     default: ['user'],
