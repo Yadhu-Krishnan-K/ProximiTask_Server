@@ -1,5 +1,4 @@
 import UserModel from '../../infrastructure/db/userSchema.js';
-// import User from '../../domain/entities/User.js';
 import CustomError from '../../config/CustomError.js';
 import { comparePass } from '../../utils/comparePass.js';
 import bcrypt from "bcryptjs";
@@ -30,7 +29,7 @@ class UserRepository {
       if (user) {
         return user
       }
-      throw new CustomError('invalid email', 404);
+      throw  CustomError.unauthorized("Invalid emailid");
     } catch (error) {
       console.error('Error finding user by email:', error.message);
       throw error

@@ -15,7 +15,7 @@ import userRoutes from './presentation/routes/userRoutes.js';
 import workerRoutes from './presentation/routes/workerRoutes.js'
 import adminRoutes from './presentation/routes/adminRoutes.js'
 import locationRoutes from './presentation/routes/locationRoutes.js'
-import refresh from './presentation/routes/tokenRoute.js'
+// import refresh from './presentation/routes/tokenRoute.js'
 import cateRoute from './presentation/routes/cateRoute.js'
 import errorHandler from './middlewares/errorHandler.js';
 // import { any } from 'promise';
@@ -27,7 +27,10 @@ config()
 app.use(morgan("dev"))
 const DB_URL = process.env.DB_URL
 const PORT = process.env.PORT||3000
-app.use(cors({credentials:true}))
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+}))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
@@ -36,7 +39,7 @@ app.use(cookieParser())
 app.use('/users', userRoutes);
 app.use('/workers',workerRoutes)
 app.use('/admin',adminRoutes);
-app.use('/refresh',refresh)
+// app.use('/refresh',refresh)
 app.use('/category',cateRoute)
 app.use('/location',locationRoutes)
 

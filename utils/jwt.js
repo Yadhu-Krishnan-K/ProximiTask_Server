@@ -20,19 +20,12 @@ const generateRefreshToken = (user) => {
   return refreshToken
 };
 
-const verifyToken = (token, secret,requiredRole) => {
+const verifyToken = (token, secret) => {
   try {
-    console.log('access token ...---',token)
-    const decoded = verify(token, secret);
-    // console.log('decoded = ',decoded)
-    const expTime = new Date(decoded.exp * 1000)
-    const success =  expTime > new Date();
-    // console.log('success === ',success)
-    if(requiredRole == decoded.role)return {success,email:decoded.email}
-    throw new CustomError('Access Denined',409)
+    return jwt.verify(token,secret)
   } catch (error) {
-    console.log('error from jwt ---====--=-=----00-===============================================--------  ',error)
-    return {success:false}
+    console.log('errror from verifying token = ',error)
+    throw error
   }
 };
 const verifyRefreshToken = (token,secret) => {

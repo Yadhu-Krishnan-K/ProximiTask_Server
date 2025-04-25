@@ -1,6 +1,6 @@
 import CustomError from '../../../config/CustomError.js';
 import { comparePass } from '../../../utils/comparePass.js';
-import User from '../../entities/User.js';
+import UserDTO from '../../entities/User.js';
 
 class UserLogin {
   constructor(userRepository) {
@@ -18,12 +18,10 @@ class UserLogin {
           const res = await comparePass(pass,user.password)
         console.log('comparePass res = ',res)
         if(res){
-          return new User(user.toObject());
+          return new UserDTO(user.toObject());
         }else{
-          throw new CustomError('Invalid password',401)
+          throw  CustomError.unauthorized('Invalid password')
         }
-      }else{
-        throw new CustomError('Invalid User',401)
       }
       // throw new CustomError('Invalid credentials', 401);
     } catch (error) {

@@ -117,7 +117,7 @@ const getUserData = async(req,res,next) => {
     const email = req.params.email
     const user = await new FindUser(userRepository).execute(email)
     console.log('user Data = ',user)
-    res.status(200).json({user:{name:user.username,email:user.email,isActive:user.isActive}})
+    res.status(200).json({user:{name:user.repo =username,email:user.email,isActive:user.isActive}})
   } catch (error) {
     console.error(error)
     next(error)

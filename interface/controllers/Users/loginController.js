@@ -2,8 +2,8 @@ import UserLogin from "../../../domain/usecases/Users/UserLogin.js";
 import jwt from "../../../utils/jwt.js";
 import UserRepository from "../../repositories/UserRepository.js";
 
-const userRepository = new UserRepository()
-const login = async (req, res, next) => {
+  const userRepository = new UserRepository()
+  const login = async (req, res, next) => {
     console.log('body === ',req.body);
     const userLogin = new UserLogin(userRepository);
   
@@ -14,31 +14,19 @@ const login = async (req, res, next) => {
       const accessToken = jwt.generateAccessToken(user);
       console.log('userData while login in === ',user)
       // console.log(`access token = ${accessToken}, refresh Token = ${refreshToken}`);
-      res.cookie("refreshToken",refreshToken,{ httpOnly: true })
+      // res.cookie("refreshToken",refreshToken,{ httpOnly: true })
       res.cookie("accessToken",accessToken,{ httpOnly: true })
   
       res.cookie('refreshToken', refreshToken, {
         httpOnly:true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict',
+        sameSite: 'none',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
-      res.json({ accessToken, roles: user.roles });
-
-
       res.status(200).json({
         success: true,
-        user: { 
-          _id: user.id,
-          name: user.username,
-          email: user.email, 
-          isActive:user.isActive, 
-          originalImgURL:user.originalImgURL,
-          // originalImgPublicId: user.originalImgPublicId,
-          croppedImgURL:user.croppedImgURL,
-          // croppedImgPublicId:user.croppedImgPublicId 
-        },
+        user
       });
     } catch (error) {
       console.error("Error during login:", error);

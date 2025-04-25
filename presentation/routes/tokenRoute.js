@@ -1,10 +1,10 @@
-import {Router} from 'express'
-import { refreshAccessToken } from '../../interface/controllers/Users/AccessTokenControll.js'
+// import {Router} from 'express'
+// import { refreshAccessToken } from '../../interface/controllers/Users/AccessTokenControll.js'
 
-const router = Router()
+// const router = Router()
 
-router.route('/access-token')
-.post(refreshAccessToken)
+// router.route('/access-token')
+// .post(refreshAccessToken)
 
 
-export default router
+// export default router
